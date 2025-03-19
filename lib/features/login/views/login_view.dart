@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_labels.dart';
 //import '../../../core/services/login_service.dart';
-import '../../../main.dart';
+import '../../../core/widgets/home_screen.dart';
+import '../../register/views/register_view.dart';
 import '../widgets/login_form.dart';
 
 class LoginView extends StatefulWidget {
@@ -22,7 +23,7 @@ class _LoginViewState extends State<LoginView> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => HomeScreen(userRole: 'admin'),
+          builder: (context) => HomeScreen(userRole: 'client'),
         ),
       );
     // setState(() {
@@ -118,6 +119,25 @@ class _LoginViewState extends State<LoginView> {
               passwordController: passwordController,
               onSubmit: _handleLogin,
             ),
+            const SizedBox(height: 20),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const RegisterView()),
+              );
+            },
+            child: const Text(
+              "¿Eres tendero? Regístrate aquí",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: AppColors.primaryColor,
+                decoration: TextDecoration.underline,
+                decorationColor: AppColors.primaryColor
+              ),
+            ),
+          ),
           ],
         ),
       ),
