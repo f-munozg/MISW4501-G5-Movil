@@ -9,16 +9,16 @@ import '../../features/products/views/product_view.dart';
 class AppMenu {
   static final List<BottomNavItem> clientMenu = [
     BottomNavItem(icon: Icons.local_shipping, label: 'Pedidos', screen: const OrderView()),
-    BottomNavItem(icon: Icons.inventory, label: 'Productos', screen: const ProductView()),
+    BottomNavItem(icon: Icons.inventory, label: 'Productos', screen:  ProductView()),
     BottomNavItem(icon: Icons.storefront, label: 'Stock',screen: const StockView()),
     BottomNavItem(icon: Icons.settings, label: 'Configuración', screen: const SettingsView()),
   ];
 
   static final List<BottomNavItem> sellerMenu = [
     BottomNavItem(icon: Icons.tour, label: 'Inicio', screen: const OrderView()),
-    BottomNavItem(icon: Icons.inventory, label: 'Productos', screen: const ProductView()),
+    BottomNavItem(icon: Icons.inventory, label: 'Productos', screen:  ProductView()),
     BottomNavItem(icon: Icons.storefront, label: 'Tiendas', screen: const StoreView()),
-    BottomNavItem(icon: Icons.person, label: 'Clientes', screen: const ClientView()),
+    BottomNavItem(icon: Icons.person, label: 'Clientes', screen: ClientView()),
     BottomNavItem(icon: Icons.settings, label: 'Configuración', screen: const SettingsView()),
   ];
 }

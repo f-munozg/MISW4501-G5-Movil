@@ -10,7 +10,7 @@ class AppRoutes {
 
   static Map<String, WidgetBuilder> routes = {
     login: (context) => const LoginView(),
-    products: (context) => const ProductView(),
+    products: (context) =>  ProductView(),
   };
 
 
