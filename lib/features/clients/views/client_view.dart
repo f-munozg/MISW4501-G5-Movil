@@ -1,11 +1,12 @@
 import 'package:ccp_mobile/core/models/user.dart';
+import 'package:ccp_mobile/features/clients/views/client_detail_view.dart';
 import 'package:flutter/material.dart';
 import '../../../core/widgets/custom_app_bar.dart';
 
 class ClientView extends StatelessWidget {
   ClientView({super.key});
 
-    final List<User> clients = [
+  final List<User> clients = [
     User(
       identificationNumber: "123456789",
       name: "John Doe",
@@ -28,8 +29,6 @@ class ClientView extends StatelessWidget {
     ),
   ];
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,12 +46,12 @@ class ClientView extends StatelessWidget {
             subtitle: Text(client.address),
             trailing: Icon(Icons.arrow_forward_ios),
             onTap: () {
-              // Navigate to client details page
-              // Navigator.pushNamed(
-              //   context,
-              //   '/clientDetails',
-              //   arguments: client,
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ClientDetailView(client: client),
+                ),
+              );
             },
           );
         },
