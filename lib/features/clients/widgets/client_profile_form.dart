@@ -30,12 +30,14 @@ class ClientProfileForm extends StatelessWidget {
       child: ListView(
         children: [
           TextFormField(
+            key: const Key('nameField'),
             controller: nameController,
             decoration: const InputDecoration(labelText: "Nombre completo"),
             validator: (value) =>
                 value!.isEmpty ? "Este campo es requerido" : null,
           ),
           TextFormField(
+            key: const Key('emailField'),
             controller: emailController,
             decoration: const InputDecoration(labelText: "Correo electrónico"),
             keyboardType: TextInputType.emailAddress,
@@ -43,37 +45,42 @@ class ClientProfileForm extends StatelessWidget {
                 value!.isEmpty ? "Este campo es requerido" : null,
           ),
           TextFormField(
+            key: const Key('documentField'),
             controller: documentController,
             decoration:
                 const InputDecoration(labelText: "Documento de identidad"),
             keyboardType: TextInputType.number,
           ),
           TextFormField(
+            key: const Key('nitField'),
             controller: nitController,
             decoration: const InputDecoration(labelText: "NIT"),
             keyboardType: TextInputType.number,
           ),
           TextFormField(
+            key: const Key('addressField'),
             controller: addressController,
             decoration: const InputDecoration(labelText: "Dirección"),
           ),
           TextFormField(
+            key: const Key('phoneField'),
             controller: phoneController,
             decoration: const InputDecoration(labelText: "Teléfono"),
             keyboardType: TextInputType.phone,
           ),
           const SizedBox(height: 24),
           ElevatedButton(
+            key: const Key('submitButton'),
             onPressed: onSubmit,
-            child: const Text("Guardar"),
             style: ElevatedButton.styleFrom(
               side: const BorderSide(color: AppColors.primaryColor, width: 2),
-              foregroundColor: AppColors.primaryColor, // texto/icono
-              backgroundColor: Colors.white, // fondo del botón
+              foregroundColor: AppColors.primaryColor,
+              backgroundColor: Colors.white,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8), // opcional
+                borderRadius: BorderRadius.circular(8),
               ),
             ),
+            child: const Text("Guardar"),
           ),
         ],
       ),
