@@ -1,3 +1,5 @@
+import 'package:ccp_mobile/core/models/bottom_nav_item.dart';
+
 import '../../features/store/views/store_view.dart';
 import '../../features/clients/views/client_view.dart';
 import '../../features/orders/views/order_view.dart';
@@ -21,16 +23,4 @@ class AppMenu {
     BottomNavItem(icon: Icons.person, label: 'Clientes', screen: ClientView()),
     BottomNavItem(icon: Icons.settings, label: 'Configuración', screen: const SettingsView()),
   ];
-}
-
-class BottomNavItem {
-  final IconData icon;
-  final String label;
-  final Widget screen;
-
-  const BottomNavItem({
-    required this.icon,
-    required this.label,
-    required this.screen,
-  });
 }

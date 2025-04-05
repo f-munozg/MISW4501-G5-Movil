@@ -1,11 +1,15 @@
 import 'package:ccp_mobile/core/models/product.dart';
+import 'package:ccp_mobile/core/providers/cart_provider.dart';
+import 'package:ccp_mobile/features/products/views/shopping_cart.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../core/widgets/custom_app_bar.dart';
 
 class ProductView extends StatelessWidget {
+  
   ProductView({super.key});
 
-    final List<Product> products = [
+  final List<Product> products = [
     Product(
       sku: "ABC123",
       name: "Producto 1",
@@ -14,7 +18,7 @@ class ProductView extends StatelessWidget {
       productFeatures: "Resistente al agua",
       providerId: "debedacc-3e31-4003-8986-871637d727af",
       timeDeliveryDear: DateTime(2025, 4, 1),
-      photo: "https://via.placeholder.com/150", // Imagen de ejemplo
+      photo: 'assets/images/LogoCCP.png', // Imagen de ejemplo
       description: "Este es un producto de prueba.",
     ),
     Product(
@@ -25,18 +29,31 @@ class ProductView extends StatelessWidget {
       productFeatures: "Ecológico",
       providerId: "b1234567-3e31-4003-8986-871637d727af",
       timeDeliveryDear: DateTime(2025, 5, 10),
-      photo: "https://via.placeholder.com/150",
+      photo: 'assets/images/LogoCCP.png',
       description: "Otro producto de prueba.",
     ),
   ];
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
+      appBar: CustomAppBar(
         title: "Productos",
         showBackButton: false,
+        actionButton: IconButton(
+          icon: Badge(
+            label: Consumer<CartProvider>(
+              builder: (_, cart, __) => Text('${cart.itemCount}'),
+            ),
+            child: const Icon(Icons.shopping_cart, color: Colors.white,),
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const ShoppingCartView()),
+            );
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -52,7 +69,8 @@ class ProductView extends StatelessWidget {
             final product = products[index];
             return Card(
               elevation: 4,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
               child: Stack(
                 children: [
                   Column(
@@ -60,17 +78,21 @@ class ProductView extends StatelessWidget {
                     children: [
                       Expanded(
                         child: ClipRRect(
-                          borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-                          child: Image.network(product.photo, fit: BoxFit.cover, width: double.infinity),
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(10)),
+                          child: Image.asset(product.photo,
+                              fit: BoxFit.cover, width: double.infinity),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(product.name, style: TextStyle(fontWeight: FontWeight.bold)),
+                        child: Text(product.name,
+                            style: TextStyle(fontWeight: FontWeight.bold)),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text("\$${product.unitValue.toStringAsFixed(2)}", style: TextStyle(color: Colors.green)),
+                        child: Text("\$${product.unitValue.toStringAsFixed(2)}",
+                            style: TextStyle(color: Colors.green)),
                       ),
                     ],
                   ),
@@ -78,9 +100,15 @@ class ProductView extends StatelessWidget {
                     top: 8,
                     right: 8,
                     child: IconButton(
-                      icon: Icon(Icons.add_circle, color: Colors.blue),
+                      icon: Icon(Icons.add_circle, color: Colors.green),
                       onPressed: () {
-                        // Acción de añadir producto
+                        Provider.of<CartProvider>(context, listen: false)
+                            .addToCart(product);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content:
+                                  Text('${product.name} añadido al carrito')),
+                        );
                       },
                     ),
                   ),

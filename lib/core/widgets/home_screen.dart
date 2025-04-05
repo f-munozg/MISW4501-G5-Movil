@@ -1,5 +1,6 @@
 import 'package:ccp_mobile/core/constants/app_colors.dart';
 import 'package:ccp_mobile/core/constants/app_menu.dart';
+import 'package:ccp_mobile/core/models/bottom_nav_item.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {

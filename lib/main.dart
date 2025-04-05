@@ -1,8 +1,17 @@
+import 'package:ccp_mobile/core/providers/cart_provider.dart';
 import 'package:flutter/material.dart';
 import 'routes/app_routes.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => CartProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
