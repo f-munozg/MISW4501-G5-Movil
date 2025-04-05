@@ -18,6 +18,7 @@ class LoginForm extends StatelessWidget {
     return Column(
       children: [
         TextField(
+          key: const Key('loginEmailField'),
           controller: emailController,
           style: const TextStyle(color: Colors.white),
           keyboardType: TextInputType.emailAddress,
@@ -37,6 +38,7 @@ class LoginForm extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         TextField(
+          key: const Key('loginPasswordField'),
           controller: passwordController,
           style: const TextStyle(color: Colors.white),
           obscureText: true,
@@ -56,6 +58,7 @@ class LoginForm extends StatelessWidget {
         ),
         const SizedBox(height: 32),
         ElevatedButton(
+          key: const Key('loginButton'),
           onPressed: onSubmit,
           child: const Text(
             'Ingresar',

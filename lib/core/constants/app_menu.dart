@@ -1,3 +1,5 @@
+import 'package:ccp_mobile/core/models/bottom_nav_item.dart';
+
 import '../../features/store/views/store_view.dart';
 import '../../features/clients/views/client_view.dart';
 import '../../features/orders/views/order_view.dart';
@@ -11,7 +13,7 @@ class AppMenu {
     BottomNavItem(icon: Icons.local_shipping, label: 'Pedidos', screen: const OrderView()),
     BottomNavItem(icon: Icons.inventory, label: 'Productos', screen:  ProductView()),
     BottomNavItem(icon: Icons.storefront, label: 'Stock',screen: const StockView()),
-    BottomNavItem(icon: Icons.settings, label: 'Configuración', screen: const SettingsView()),
+    BottomNavItem(icon: Icons.settings, label: 'Configuración', screen: const SettingsView(userRole: 'client')),
   ];
 
   static final List<BottomNavItem> sellerMenu = [
@@ -19,18 +21,6 @@ class AppMenu {
     BottomNavItem(icon: Icons.inventory, label: 'Productos', screen:  ProductView()),
     BottomNavItem(icon: Icons.storefront, label: 'Tiendas', screen: const StoreView()),
     BottomNavItem(icon: Icons.person, label: 'Clientes', screen: ClientView()),
-    BottomNavItem(icon: Icons.settings, label: 'Configuración', screen: const SettingsView()),
+    BottomNavItem(icon: Icons.settings, label: 'Configuración', screen: const SettingsView(userRole: 'seller')),
   ];
-}
-
-class BottomNavItem {
-  final IconData icon;
-  final String label;
-  final Widget screen;
-
-  const BottomNavItem({
-    required this.icon,
-    required this.label,
-    required this.screen,
-  });
 }
