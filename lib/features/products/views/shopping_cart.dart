@@ -1,3 +1,4 @@
+import 'package:ccp_mobile/core/constants/app_colors.dart';
 import 'package:ccp_mobile/core/widgets/custom_app_bar.dart';
 import 'package:ccp_mobile/features/products/views/checkout_view.dart';
 import 'package:flutter/material.dart';
@@ -85,6 +86,16 @@ class ShoppingCartView extends StatelessWidget {
                                 builder: (_) => const CheckoutView()),
                           );
                         },
+                        style: ElevatedButton.styleFrom(
+                          side: const BorderSide(
+                              color: AppColors.primaryColor, width: 2),
+                          foregroundColor:
+                              AppColors.primaryColor, // texto/icono
+                          backgroundColor: Colors.white, // fondo del botón
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8), // opcional
+                          ),
+                        ),
                         child: const Text("Reservar"),
                       ),
                     ),

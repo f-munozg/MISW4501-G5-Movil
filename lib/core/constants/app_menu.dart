@@ -13,7 +13,7 @@ class AppMenu {
     BottomNavItem(icon: Icons.local_shipping, label: 'Pedidos', screen: const OrderView()),
     BottomNavItem(icon: Icons.inventory, label: 'Productos', screen:  ProductView()),
     BottomNavItem(icon: Icons.storefront, label: 'Stock',screen: const StockView()),
-    BottomNavItem(icon: Icons.settings, label: 'Configuración', screen: const SettingsView()),
+    BottomNavItem(icon: Icons.settings, label: 'Configuración', screen: const SettingsView(userRole: 'client')),
   ];
 
   static final List<BottomNavItem> sellerMenu = [
@@ -21,6 +21,6 @@ class AppMenu {
     BottomNavItem(icon: Icons.inventory, label: 'Productos', screen:  ProductView()),
     BottomNavItem(icon: Icons.storefront, label: 'Tiendas', screen: const StoreView()),
     BottomNavItem(icon: Icons.person, label: 'Clientes', screen: ClientView()),
-    BottomNavItem(icon: Icons.settings, label: 'Configuración', screen: const SettingsView()),
+    BottomNavItem(icon: Icons.settings, label: 'Configuración', screen: const SettingsView(userRole: 'seller')),
   ];
 }

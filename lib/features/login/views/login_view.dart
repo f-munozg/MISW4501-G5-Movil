@@ -23,7 +23,7 @@ class _LoginViewState extends State<LoginView> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => HomeScreen(userRole: 'seller'),
+          builder: (context) => HomeScreen(userRole: 'client'),
         ),
       );
     // setState(() {

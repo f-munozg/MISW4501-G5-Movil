@@ -1,3 +1,4 @@
+import 'package:ccp_mobile/core/constants/app_colors.dart';
 import 'package:ccp_mobile/core/widgets/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +25,8 @@ class CheckoutView extends StatelessWidget {
           ? const Center(child: Text("No hay productos en el carrito"))
           : ListView.builder(
               itemCount: cart.items.length,
-              padding: const EdgeInsets.only(bottom: 140), // deja espacio para la parte inferior
+              padding: const EdgeInsets.only(
+                  bottom: 140),
               itemBuilder: (context, index) {
                 final item = cart.items[index];
                 return ListTile(
@@ -41,12 +43,16 @@ class CheckoutView extends StatelessWidget {
           ? null
           : SafeArea(
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 margin: const EdgeInsets.only(bottom: 25),
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   boxShadow: [
-                    BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, -2)),
+                    BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 8,
+                        offset: Offset(0, -2)),
                   ],
                 ),
                 child: Column(
@@ -80,10 +86,21 @@ class CheckoutView extends StatelessWidget {
                         onPressed: () {
                           // Lógica para crear pedido
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Pedido creado exitosamente")),
+                            const SnackBar(
+                                content: Text("Pedido creado exitosamente")),
                           );
                           Navigator.pop(context);
                         },
+                        style: ElevatedButton.styleFrom(
+                          side: const BorderSide(
+                              color: AppColors.primaryColor, width: 2),
+                          foregroundColor:
+                              AppColors.primaryColor, // texto/icono
+                          backgroundColor: Colors.white, // fondo del botón
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8), // opcional
+                          ),
+                        ),
                         child: const Text("Crear pedido"),
                       ),
                     ),
