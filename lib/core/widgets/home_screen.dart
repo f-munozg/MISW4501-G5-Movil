@@ -1,5 +1,6 @@
 import 'package:ccp_mobile/core/constants/app_colors.dart';
 import 'package:ccp_mobile/core/constants/app_menu.dart';
+import 'package:ccp_mobile/core/models/bottom_nav_item.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -14,7 +15,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   List<BottomNavItem> getMenuItems() {
-    return widget.userRole == 'client' ? AppMenu.clientMenu : AppMenu.sellerMenu; 
+    return widget.userRole == 'Cliente' ? AppMenu.clientMenu : AppMenu.sellerMenu; 
   }
 
   @override

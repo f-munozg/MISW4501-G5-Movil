@@ -1,95 +1,148 @@
+import 'dart:convert';
 import 'package:ccp_mobile/core/models/product.dart';
+import 'package:ccp_mobile/core/providers/cart_provider.dart';
+import 'package:ccp_mobile/core/services/stock_service.dart';
+import 'package:ccp_mobile/features/products/views/shopping_cart.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../core/widgets/custom_app_bar.dart';
 
-class ProductView extends StatelessWidget {
-  ProductView({super.key});
+class ProductView extends StatefulWidget {
+  const ProductView({super.key});
 
-    final List<Product> products = [
-    Product(
-      sku: "ABC123",
-      name: "Producto 1",
-      unitValue: 19.99,
-      conditionsStorage: "Almacenar en un lugar seco",
-      productFeatures: "Resistente al agua",
-      providerId: "debedacc-3e31-4003-8986-871637d727af",
-      timeDeliveryDear: DateTime(2025, 4, 1),
-      photo: "https://via.placeholder.com/150", // Imagen de ejemplo
-      description: "Este es un producto de prueba.",
-    ),
-    Product(
-      sku: "XYZ789",
-      name: "Producto 2",
-      unitValue: 29.99,
-      conditionsStorage: "Mantener refrigerado",
-      productFeatures: "Ecológico",
-      providerId: "b1234567-3e31-4003-8986-871637d727af",
-      timeDeliveryDear: DateTime(2025, 5, 10),
-      photo: "https://via.placeholder.com/150",
-      description: "Otro producto de prueba.",
-    ),
-  ];
+  @override
+  State<ProductView> createState() => _ProductViewState();
+}
 
+class _ProductViewState extends State<ProductView> {
+  List<Product> _products = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchProducts();
+  }
+
+  Future<void> _fetchProducts() async {
+    try {
+      final service = StockService();
+      final products = await service.getProducts();
+      setState(() {
+        _products = products;
+        _isLoading = false;
+      });
+    } catch (e) {
+      print('Error al obtener productos: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
+      appBar: CustomAppBar(
         title: "Productos",
         showBackButton: false,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: GridView.builder(
-          itemCount: products.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2, // 2 elementos por fila
-            crossAxisSpacing: 8,
-            mainAxisSpacing: 8,
-            childAspectRatio: 0.8, // Ajusta el tamaño de las tarjetas
+        actionButton: IconButton(
+          icon: Badge(
+            label: Consumer<CartProvider>(
+              builder: (_, cart, __) => Text('${cart.itemCount}'),
+            ),
+            child: const Icon(Icons.shopping_cart, color: Colors.white),
           ),
-          itemBuilder: (context, index) {
-            final product = products[index];
-            return Card(
-              elevation: 4,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-              child: Stack(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-                          child: Image.network(product.photo, fit: BoxFit.cover, width: double.infinity),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(product.name, style: TextStyle(fontWeight: FontWeight.bold)),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text("\$${product.unitValue.toStringAsFixed(2)}", style: TextStyle(color: Colors.green)),
-                      ),
-                    ],
-                  ),
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: IconButton(
-                      icon: Icon(Icons.add_circle, color: Colors.blue),
-                      onPressed: () {
-                        // Acción de añadir producto
-                      },
-                    ),
-                  ),
-                ],
-              ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const ShoppingCartView()),
             );
           },
         ),
       ),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GridView.builder(
+                itemCount: _products.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
+                  childAspectRatio: 0.8,
+                ),
+                itemBuilder: (context, index) {
+                  final product = _products[index];
+                  return Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    child: Stack(
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: ClipRRect(
+                                borderRadius: const BorderRadius.vertical(
+                                    top: Radius.circular(10)),
+                                child: Image.memory(
+                                  base64Decode(product.photo),
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(product.product,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold)),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text("Categoría: ${product.category}",
+                                  style:
+                                      const TextStyle(color: Colors.black54)),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text("Disponible: ${product.quantity}",
+                                  style:
+                                      const TextStyle(color: Colors.black54)),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text("Precio: ${product.unitValue}",
+                                  style: const TextStyle(color: Colors.black)),
+                            ),
+                          ],
+                        ),
+                        Positioned(
+                          top: 8,
+                          right: 8,
+                          child: IconButton(
+                            icon: const Icon(Icons.add_circle,
+                                color: Colors.green),
+                            onPressed: () {
+                              Provider.of<CartProvider>(context, listen: false)
+                                  .addToCart(product);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text(
+                                        '${product.product} añadido al carrito')),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
     );
   }
 }
