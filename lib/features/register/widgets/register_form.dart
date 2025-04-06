@@ -117,7 +117,10 @@ class _RegisterFormState extends State<RegisterForm> {
         ),
         if (_isLoading)
           const Center(
-            child: LoadingSpinner(),
+            child: LoadingSpinner(
+              color: AppColors.primaryColor,
+              size: 20.0,
+            ),
           ),
       ],
     );

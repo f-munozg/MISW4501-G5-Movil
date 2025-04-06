@@ -29,7 +29,6 @@ class _LoginViewState extends State<LoginView> {
       );
 
       if (response != null) {
-        print(response);
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HomeScreen(userRole: response)),

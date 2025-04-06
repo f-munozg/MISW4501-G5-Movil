@@ -65,7 +65,7 @@ class _ProductViewState extends State<ProductView> {
               child: GridView.builder(
                 itemCount: _products.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, 
+                  crossAxisCount: 2,
                   crossAxisSpacing: 8,
                   mainAxisSpacing: 8,
                   childAspectRatio: 0.8,
@@ -83,7 +83,8 @@ class _ProductViewState extends State<ProductView> {
                           children: [
                             Expanded(
                               child: ClipRRect(
-                                borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+                                borderRadius: const BorderRadius.vertical(
+                                    top: Radius.circular(10)),
                                 child: Image.memory(
                                   base64Decode(product.photo),
                                   fit: BoxFit.cover,
@@ -94,15 +95,26 @@ class _ProductViewState extends State<ProductView> {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(product.product,
-                                  style: const TextStyle(fontWeight: FontWeight.bold)),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold)),
                             ),
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Text("Disponible: ${product.quantity}",
-                                  style: const TextStyle(color: Colors.black54)),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text("Categoría: ${product.category}",
+                                  style:
+                                      const TextStyle(color: Colors.black54)),
                             ),
-                                                        Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text("Disponible: ${product.quantity}",
+                                  style:
+                                      const TextStyle(color: Colors.black54)),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
                               child: Text("Precio: ${product.unitValue}",
                                   style: const TextStyle(color: Colors.black)),
                             ),
@@ -112,12 +124,15 @@ class _ProductViewState extends State<ProductView> {
                           top: 8,
                           right: 8,
                           child: IconButton(
-                            icon: const Icon(Icons.add_circle, color: Colors.green),
+                            icon: const Icon(Icons.add_circle,
+                                color: Colors.green),
                             onPressed: () {
                               Provider.of<CartProvider>(context, listen: false)
                                   .addToCart(product);
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('${product.product} añadido al carrito')),
+                                SnackBar(
+                                    content: Text(
+                                        '${product.product} añadido al carrito')),
                               );
                             },
                           ),

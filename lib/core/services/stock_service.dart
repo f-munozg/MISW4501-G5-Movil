@@ -9,7 +9,6 @@ class StockService {
     final url = Uri.parse('${AppConfig.apiBackStock}/stock/get');
     final response = await http.get(url);
 
-    print(response.body);
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       final List products = data['results'];
