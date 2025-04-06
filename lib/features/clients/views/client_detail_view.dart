@@ -1,12 +1,12 @@
+import 'package:ccp_mobile/core/models/customer.dart';
 import 'package:ccp_mobile/features/clients/views/client_visits_view.dart';
 import 'package:flutter/material.dart';
-import 'package:ccp_mobile/core/models/user.dart';
 import 'package:ccp_mobile/core/widgets/custom_app_bar.dart';
 import 'package:ccp_mobile/core/constants/app_colors.dart';
 
 
 class ClientDetailView extends StatelessWidget {
-  final User client;
+  final Customer client;
 
   const ClientDetailView({super.key, required this.client});
 
@@ -31,8 +31,9 @@ class ClientDetailView extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            _buildRow("Nombre:", client.name),
-            _buildRow("Dirección:", client.address),
+            _buildRow("Nombre:", client.name ?? "N/A"),
+            _buildRow("Dirección:", "Calle 123 #45-67"),
+            _buildRow("Teléfono:", "123456789"),
             _buildRow("Zona:", "Centro"),
             _buildRow("Última Visita:", "25/03/2025"),
             const SizedBox(height: 16),

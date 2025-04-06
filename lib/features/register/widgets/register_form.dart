@@ -29,7 +29,7 @@ class _RegisterFormState extends State<RegisterForm> {
       final password = passwordController.text.trim();
       final username = email.split('@').first;
 
-      final success = await customerService.registerUser(username, email, password);
+      final success = await customerService.registerCustomer(username, email, password);
 
       setState(() => _isLoading = false);
 

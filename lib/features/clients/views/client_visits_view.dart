@@ -1,11 +1,11 @@
+import 'package:ccp_mobile/core/models/customer.dart';
 import 'package:ccp_mobile/features/clients/views/register_visit_view.dart';
 import 'package:flutter/material.dart';
-import 'package:ccp_mobile/core/models/user.dart';
 import 'package:ccp_mobile/core/widgets/custom_app_bar.dart';
 import 'package:ccp_mobile/core/constants/app_colors.dart';
 
 class ClientVisitsView extends StatelessWidget {
-  final User client;
+  final Customer client;
 
   const ClientVisitsView({super.key, required this.client});
 
@@ -83,7 +83,7 @@ class ClientVisitsView extends StatelessWidget {
     );
   }
 
-  Widget _visitItem(User client, String date) {
+  Widget _visitItem(Customer client, String date) {
     return Column(
       children: [
         const SizedBox(height: 16),
@@ -93,9 +93,8 @@ class ClientVisitsView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(client.name,
+                  Text(client.name ?? 'Unknown',
                       style: const TextStyle(fontWeight: FontWeight.w500)),
-                  Text(client.address),
                 ],
               ),
             ),

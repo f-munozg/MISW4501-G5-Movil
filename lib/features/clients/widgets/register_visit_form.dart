@@ -120,7 +120,7 @@ class _RegisterVisitFormState extends State<RegisterVisitForm> {
         key: const Key('submitButton'),
         onPressed: () {
           if (_formKey.currentState!.validate()) {
-            // lógica para registrar visita
+            Navigator.pop(context);
           }
         },
         style: OutlinedButton.styleFrom(
@@ -152,3 +152,4 @@ class _RegisterVisitFormState extends State<RegisterVisitForm> {
     );
   }
 }
+

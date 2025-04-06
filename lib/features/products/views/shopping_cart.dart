@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:ccp_mobile/core/constants/app_colors.dart';
 import 'package:ccp_mobile/core/widgets/custom_app_bar.dart';
 import 'package:ccp_mobile/features/products/views/checkout_view.dart';
@@ -21,12 +22,19 @@ class ShoppingCartView extends StatelessWidget {
           ? const Center(child: Text("Tu carrito está vacío"))
           : ListView.builder(
               itemCount: cart.items.length,
-              padding: const EdgeInsets.only(bottom: 100), // deja espacio abajo
+              padding: const EdgeInsets.only(bottom: 100),
               itemBuilder: (context, index) {
                 final item = cart.items[index];
                 return ListTile(
-                  leading: Image.asset(item.product.photo, width: 50),
-                  title: Text(item.product.name),
+                  leading: SizedBox(
+                    width: 50,
+                    height: 50,
+                    child: Image.memory(
+                      base64Decode(item.product.photo),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  title: Text(item.product.product),
                   subtitle: Text("Cantidad: ${item.quantity}"),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,

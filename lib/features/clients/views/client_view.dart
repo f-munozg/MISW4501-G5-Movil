@@ -1,33 +1,24 @@
-import 'package:ccp_mobile/core/models/user.dart';
+import 'package:ccp_mobile/core/models/customer.dart';
 import 'package:ccp_mobile/features/clients/views/client_detail_view.dart';
+import 'package:ccp_mobile/core/services/customer_service.dart';
 import 'package:flutter/material.dart';
 import '../../../core/widgets/custom_app_bar.dart';
 
-class ClientView extends StatelessWidget {
-  ClientView({super.key});
+class ClientView extends StatefulWidget {
+  const ClientView({super.key});
 
-  final List<User> clients = [
-    User(
-      identificationNumber: "123456789",
-      name: "John Doe",
-      address: "Calle 80",
-      countries: ["Colombia", "EEUU"],
-      identificationNumberContact: "987654321",
-      nameContact: "Jane Doe",
-      phoneContact: "3213211203",
-      addressContact: "Calle 81",
-    ),
-    User(
-      identificationNumber: "987654321",
-      name: "Alice Smith",
-      address: "Calle 90",
-      countries: ["España", "Argentina"],
-      identificationNumberContact: "123123123",
-      nameContact: "Bob Smith",
-      phoneContact: "555555555",
-      addressContact: "Calle 91",
-    ),
-  ];
+  @override
+  State<ClientView> createState() => _ClientViewState();
+}
+
+class _ClientViewState extends State<ClientView> {
+  late Future<List<Customer>?> _clientsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _clientsFuture = CustomerService().getCustomers();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,21 +27,35 @@ class ClientView extends StatelessWidget {
         title: "Clientes",
         showBackButton: false,
       ),
-      body: ListView.builder(
-        itemCount: clients.length,
-        itemBuilder: (context, index) {
-          final client = clients[index];
-          return ListTile(
-            leading: CircleAvatar(child: Text(client.name[0])),
-            title: Text(client.name),
-            subtitle: Text(client.address),
-            trailing: Icon(Icons.arrow_forward_ios),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => ClientDetailView(client: client),
-                ),
+      body: FutureBuilder<List<Customer>?>(
+        future: _clientsFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text("Error: ${snapshot.error}"));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text("No hay clientes disponibles"));
+          }
+
+          final clients = snapshot.data!;
+
+          return ListView.builder(
+            itemCount: clients.length,
+            itemBuilder: (context, index) {
+              final client = clients[index];
+              return ListTile(
+                leading: CircleAvatar(child: Text(client.name?.isNotEmpty == true ? client.name![0] : '?')),
+                title: Text(client.name ?? 'Nombre no disponible'),
+                trailing: const Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ClientDetailView(client: client),
+                    ),
+                  );
+                },
               );
             },
           );
