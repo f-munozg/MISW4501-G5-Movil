@@ -1,11 +1,34 @@
+import 'dart:convert';
 import 'package:ccp_mobile/core/constants/app_colors.dart';
 import 'package:ccp_mobile/core/widgets/custom_app_bar.dart';
+import 'package:ccp_mobile/core/widgets/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/providers/cart_provider.dart';
 
-class CheckoutView extends StatelessWidget {
+class CheckoutView extends StatefulWidget {
   const CheckoutView({super.key});
+
+  @override
+  State<CheckoutView> createState() => _CheckoutViewState();
+}
+
+class _CheckoutViewState extends State<CheckoutView> {
+  String? userRole;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserRole();
+  }
+
+  Future<void> _loadUserRole() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userRole = jsonDecode(prefs.getString('user_data') ?? '{}')['role'];
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,17 +48,21 @@ class CheckoutView extends StatelessWidget {
           ? const Center(child: Text("No hay productos en el carrito"))
           : ListView.builder(
               itemCount: cart.items.length,
-              padding: const EdgeInsets.only(
-                  bottom: 140),
+              padding: const EdgeInsets.only(bottom: 140),
               itemBuilder: (context, index) {
                 final item = cart.items[index];
                 return ListTile(
-                  leading: Image.asset(item.product.photo, width: 50),
-                  title: Text(item.product.name),
-                  subtitle: Text("Cantidad: ${item.quantity}"),
-                  trailing: Text(
-                    "\$${(item.product.unitValue * item.quantity).toStringAsFixed(2)}",
+                  leading: SizedBox(
+                    width: 50,
+                    height: 50,
+                    child: Image.memory(
+                      base64Decode(item.product.photo),
+                      fit: BoxFit.cover,
+                    ),
                   ),
+                  title: Text(item.product.product),
+                  subtitle: Text("Cantidad: ${item.quantity}"),
+                  trailing: Text("\$${(item.product.unitValue * item.quantity).toStringAsFixed(2)}"),
                 );
               },
             ),
@@ -43,16 +70,16 @@ class CheckoutView extends StatelessWidget {
           ? null
           : SafeArea(
               child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 margin: const EdgeInsets.only(bottom: 25),
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   boxShadow: [
                     BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 8,
-                        offset: Offset(0, -2)),
+                      color: Colors.black12,
+                      blurRadius: 8,
+                      offset: Offset(0, -2),
+                    ),
                   ],
                 ),
                 child: Column(
@@ -60,22 +87,20 @@ class CheckoutView extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        const Text("Cliente: ",
-                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        const Text("Cliente: ", style: TextStyle(fontWeight: FontWeight.bold)),
                         Expanded(
                           child: Text(cart.selectedClient ?? "No seleccionado"),
                         ),
                       ],
                     ),
                     const SizedBox(height: 8),
+                    
                     Row(
                       children: [
-                        const Text("Total: ",
-                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        const Text("Total: ", style: TextStyle(fontWeight: FontWeight.bold)),
                         Text(
                           "\$${total.toStringAsFixed(2)}",
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 18),
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                         ),
                       ],
                     ),
@@ -84,21 +109,25 @@ class CheckoutView extends StatelessWidget {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          // Lógica para crear pedido
+                          cart.clearCart();
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text("Pedido creado exitosamente")),
+                            const SnackBar(content: Text("Pedido creado exitosamente")),
                           );
-                          Navigator.pop(context);
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  HomeScreen(userRole: userRole ?? 'Cliente'),
+                            ),
+                            (route) => false,
+                          );
                         },
                         style: ElevatedButton.styleFrom(
-                          side: const BorderSide(
-                              color: AppColors.primaryColor, width: 2),
-                          foregroundColor:
-                              AppColors.primaryColor, // texto/icono
-                          backgroundColor: Colors.white, // fondo del botón
+                          side: const BorderSide(color: AppColors.primaryColor, width: 2),
+                          foregroundColor: AppColors.primaryColor,
+                          backgroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8), // opcional
+                            borderRadius: BorderRadius.circular(8),
                           ),
                         ),
                         child: const Text("Crear pedido"),

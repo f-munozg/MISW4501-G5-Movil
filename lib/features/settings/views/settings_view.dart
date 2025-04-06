@@ -1,5 +1,7 @@
+import 'package:ccp_mobile/core/constants/app_roles.dart';
 import 'package:ccp_mobile/features/clients/views/client_profile_view.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/widgets/custom_app_bar.dart';
 import '../../../routes/app_routes.dart';
@@ -11,7 +13,7 @@ class SettingsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isClient = userRole == 'client';
+    final isClient = userRole == AppRoles.client;
 
     return Scaffold(
       appBar: const CustomAppBar(
@@ -50,7 +52,9 @@ class SettingsView extends StatelessWidget {
                   ListTile(
                     leading: const Icon(Icons.logout, color: AppColors.primaryColor),
                     title: const Text("Cerrar sesión"),
-                    onTap: () {
+                    onTap: () async {
+                      final prefs = await SharedPreferences.getInstance();
+                      await prefs.remove('user_data'); 
                       Navigator.pushReplacementNamed(context, AppRoutes.login);
                     },
                   ),

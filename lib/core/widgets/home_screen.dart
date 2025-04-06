@@ -15,7 +15,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   List<BottomNavItem> getMenuItems() {
-    return widget.userRole == 'client' ? AppMenu.clientMenu : AppMenu.sellerMenu; 
+    return widget.userRole == 'Cliente' ? AppMenu.clientMenu : AppMenu.sellerMenu; 
   }
 
   @override

@@ -1,51 +1,47 @@
 class Product {
+  final String product;
   final String sku;
-  final String name;
   final double unitValue;
-  final String conditionsStorage;
-  final String productFeatures;
-  final String providerId;
-  final DateTime timeDeliveryDear;
-  final String photo;
-  final String description;
+  final String photo; // base64
+  final String category;
+  final int quantity;
+  final DateTime estimatedDeliveryTime;
+  final DateTime dateUpdate;
 
   Product({
+    required this.product,
     required this.sku,
-    required this.name,
     required this.unitValue,
-    required this.conditionsStorage,
-    required this.productFeatures,
-    required this.providerId,
-    required this.timeDeliveryDear,
     required this.photo,
-    required this.description,
+    required this.category,
+    required this.quantity,
+    required this.estimatedDeliveryTime,
+    required this.dateUpdate,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
+      product: json['product'],
       sku: json['sku'],
-      name: json['name'],
       unitValue: (json['unit_value'] as num).toDouble(),
-      conditionsStorage: json['conditions_storage'],
-      productFeatures: json['product_features'],
-      providerId: json['provider_id'],
-      timeDeliveryDear: DateTime.parse(json['time_delivery_dear']),
       photo: json['photo'],
-      description: json['description'],
+      category: json['category'],
+      quantity: json['quantity'],
+      estimatedDeliveryTime: DateTime.parse(json['estimated_delivery_time']),
+      dateUpdate: DateTime.parse(json['date_update']),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
+      'product': product,
       'sku': sku,
-      'name': name,
       'unit_value': unitValue,
-      'conditions_storage': conditionsStorage,
-      'product_features': productFeatures,
-      'provider_id': providerId,
-      'time_delivery_dear': timeDeliveryDear.toIso8601String(),
       'photo': photo,
-      'description': description,
+      'category': category,
+      'quantity': quantity,
+      'estimated_delivery_time': estimatedDeliveryTime.toIso8601String(),
+      'date_update': dateUpdate.toIso8601String(),
     };
   }
 }

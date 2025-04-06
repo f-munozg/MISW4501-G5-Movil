@@ -1,7 +1,7 @@
+import 'package:ccp_mobile/core/services/login_service.dart';
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_labels.dart';
-//import '../../../core/services/login_service.dart';
 import '../../../core/widgets/home_screen.dart';
 import '../../register/views/register_view.dart';
 import '../widgets/login_form.dart';
@@ -17,52 +17,47 @@ class _LoginViewState extends State<LoginView> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool _isLoading = false;
-  //final LoginService _loginService = LoginService();
+  final loginService = LoginService();
 
   Future<void> _handleLogin() async {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomeScreen(userRole: 'client'),
-        ),
+    setState(() => _isLoading = true);
+
+    try {
+      final response = await loginService.login(
+        emailController.text.trim(),
+        passwordController.text.trim(),
       );
-    // setState(() {
-    //   _isLoading = true;
-    // });
-    // try {
-    //   final isAuthenticated = await _loginService.login(
-    //     emailController.text.trim(),
-    //     passwordController.text.trim(),
-    //   );
-    //   if (isAuthenticated) {
-    //     //Navigator.pushNamed(context, AppRoutes.qrScanner);
-    //   } else {
-    //     _showErrorDialog('Credenciales incorrectas');
-    //   }
-    // } catch (e) {
-    //   _showErrorDialog('Error de conexión: ${e.toString()}');
-    // } finally {
-    //   setState(() {
-    //     _isLoading = false;
-    //   });
-    // }
+
+      if (response != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen(userRole: response)),
+        );
+      } else {
+        _showErrorDialog('Credenciales incorrectas');
+      }
+    } catch (e) {
+      _showErrorDialog('Error de conexión: ${e.toString()}');
+    } finally {
+      setState(() => _isLoading = false);
+    }
   }
 
-  // void _showErrorDialog(String message) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (context) => AlertDialog(
-  //       title: const Text('Error'),
-  //       content: Text(message),
-  //       actions: [
-  //         TextButton(
-  //           onPressed: () => Navigator.pop(context),
-  //           child: const Text('OK'),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Error'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,8 +66,11 @@ class _LoginViewState extends State<LoginView> {
         children: [
           _buildLoginForm(),
           if (_isLoading)
-            const Center(
-              child: CircularProgressIndicator(), // Spinner en el centro
+            Container(
+              color: Colors.black.withOpacity(0.5),
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
             ),
         ],
       ),
@@ -80,46 +78,43 @@ class _LoginViewState extends State<LoginView> {
   }
 
   Widget _buildLoginForm() {
-    return Scaffold(
-      body: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16.0),
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              AppColors.primaryColor, 
-              AppColors.secondaryColor,
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16.0),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [AppColors.primaryColor, AppColors.secondaryColor],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center, 
-          crossAxisAlignment: CrossAxisAlignment.center, 
-          children: [
-         Image.asset(
-              'assets/images/LogoCCP.png',
-              height: MediaQuery.of(context).size.width * 0.4,
-              width: MediaQuery.of(context).size.width * 1,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Image.asset(
+            'assets/images/LogoCCP.png',
+            height: MediaQuery.of(context).size.width * 0.4,
+            width: MediaQuery.of(context).size.width * 1,
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: Text(
+              AppLabels.appBar,
+              style: TextStyle(
+                fontSize: MediaQuery.of(context).size.width * 0.045,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            Align(
-                alignment: Alignment.center,
-                child: Text(
-                  AppLabels.appBar, // Título centrado
-                  style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.width * 0.045,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                )),
-            const SizedBox(height: 40),
-            LoginForm(
-              emailController: emailController,
-              passwordController: passwordController,
-              onSubmit: _handleLogin,
-            ),
-            const SizedBox(height: 20),
+          ),
+          const SizedBox(height: 40),
+          LoginForm(
+            emailController: emailController,
+            passwordController: passwordController,
+            onSubmit: _handleLogin,
+          ),
+          const SizedBox(height: 20),
           GestureDetector(
             onTap: () {
               Navigator.push(
@@ -134,12 +129,11 @@ class _LoginViewState extends State<LoginView> {
                 fontWeight: FontWeight.bold,
                 color: AppColors.primaryColor,
                 decoration: TextDecoration.underline,
-                decorationColor: AppColors.primaryColor
+                decorationColor: AppColors.primaryColor,
               ),
             ),
           ),
-          ],
-        ),
+        ],
       ),
     );
   }
