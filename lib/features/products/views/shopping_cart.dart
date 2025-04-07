@@ -6,16 +6,17 @@ import 'package:ccp_mobile/core/services/customer_service.dart';
 import 'package:ccp_mobile/core/widgets/custom_app_bar.dart';
 import 'package:ccp_mobile/features/products/views/checkout_view.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+//import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/providers/cart_provider.dart';
 
 class ShoppingCartView extends StatelessWidget {
   const ShoppingCartView({super.key});
 
   Future<String?> _getUserRole() async {
-    final prefs = await SharedPreferences.getInstance();
-    final data = prefs.getString('user_data');
+    final box = GetStorage();
+    final data = box.read('user_data');
     if (data == null) return null;
 
     final decoded = jsonDecode(data);

@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:ccp_mobile/core/services/customer_service.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get_storage/get_storage.dart';
+//import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/widgets/custom_app_bar.dart';
 import '../widgets/client_profile_form.dart';
 
@@ -32,8 +33,8 @@ class _ClientProfileViewState extends State<ClientProfileView> {
 
   /// Cargar datos del cliente en el formulario
   Future<void> _loadCustomerData() async {
-    final prefs = await SharedPreferences.getInstance();
-    final userData = jsonDecode(prefs.getString('user_data') ?? '{}');
+    final box = GetStorage();
+    final userData = jsonDecode(box.read('user_data') ?? '{}');
     customerId = userData['user_id'];
     if (customerId != null) {
       try {
