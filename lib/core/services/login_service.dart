@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:ccp_mobile/core/constants/app_config.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
+//import 'package:shared_preferences/shared_preferences.dart';
 
 
 class LoginService {
@@ -18,8 +19,8 @@ class LoginService {
   
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = jsonDecode(response.body);
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('user_data', jsonEncode(data));
+final box = GetStorage();
+await box.write('user_data', jsonEncode(data));
       return data['role'];
     } else if (response.statusCode == 401) {
       return null;

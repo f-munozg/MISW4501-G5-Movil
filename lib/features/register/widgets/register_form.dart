@@ -16,7 +16,8 @@ class _RegisterFormState extends State<RegisterForm> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
 
   bool _isLoading = false;
 
@@ -29,7 +30,8 @@ class _RegisterFormState extends State<RegisterForm> {
       final password = passwordController.text.trim();
       final username = email.split('@').first;
 
-      final success = await customerService.registerCustomer(username, email, password);
+      final success =
+          await customerService.registerCustomer(username, email, password);
 
       setState(() => _isLoading = false);
 
@@ -44,9 +46,12 @@ class _RegisterFormState extends State<RegisterForm> {
       }
 
       // Navegar al LoginView después de la respuesta
-      Navigator.pushReplacement(
+      Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const LoginView()),
+        MaterialPageRoute(
+          builder: (context) => LoginView(),
+        ),
+        (route) => false,
       );
     }
   }
@@ -64,16 +69,18 @@ class _RegisterFormState extends State<RegisterForm> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TextFormField(
-                    controller: nameController,
-                    decoration: const InputDecoration(labelText: 'Nombre'),
-                    validator: (value) =>
-                        value == null || value.isEmpty ? 'Campo requerido' : null,
-                  ),
-                  const SizedBox(height: 10),
+                  // TextFormField(
+                  //   controller: nameController,
+                  //   decoration: const InputDecoration(labelText: 'Nombre'),
+                  //   validator: (value) => value == null || value.isEmpty
+                  //       ? 'Campo requerido'
+                  //       : null,
+                  // ),
+                  // const SizedBox(height: 10),
                   TextFormField(
                     controller: emailController,
-                    decoration: const InputDecoration(labelText: 'Correo Electrónico'),
+                    decoration:
+                        const InputDecoration(labelText: 'Correo Electrónico'),
                     validator: (value) {
                       final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
                       if (value == null || value.isEmpty) {
@@ -89,16 +96,19 @@ class _RegisterFormState extends State<RegisterForm> {
                     controller: passwordController,
                     obscureText: true,
                     decoration: const InputDecoration(labelText: 'Contraseña'),
-                    validator: (value) =>
-                        value == null || value.isEmpty ? 'Campo requerido' : null,
+                    validator: (value) => value == null || value.isEmpty
+                        ? 'Campo requerido'
+                        : null,
                   ),
                   const SizedBox(height: 10),
                   TextFormField(
                     controller: confirmPasswordController,
                     obscureText: true,
-                    decoration: const InputDecoration(labelText: 'Confirmar Contraseña'),
-                    validator: (value) =>
-                        value != passwordController.text ? 'Las contraseñas no coinciden' : null,
+                    decoration: const InputDecoration(
+                        labelText: 'Confirmar Contraseña'),
+                    validator: (value) => value != passwordController.text
+                        ? 'Las contraseñas no coinciden'
+                        : null,
                   ),
                   const SizedBox(height: 20),
                   Center(

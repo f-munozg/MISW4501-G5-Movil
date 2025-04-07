@@ -1,7 +1,8 @@
 import 'package:ccp_mobile/core/constants/app_roles.dart';
 import 'package:ccp_mobile/features/clients/views/client_profile_view.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:get_storage/get_storage.dart';
+//import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/widgets/custom_app_bar.dart';
 import '../../../routes/app_routes.dart';
@@ -53,8 +54,8 @@ class SettingsView extends StatelessWidget {
                     leading: const Icon(Icons.logout, color: AppColors.primaryColor),
                     title: const Text("Cerrar sesión"),
                     onTap: () async {
-                      final prefs = await SharedPreferences.getInstance();
-                      await prefs.remove('user_data'); 
+                      final box = GetStorage();
+                      await box.remove('user_data');
                       Navigator.pushReplacementNamed(context, AppRoutes.login);
                     },
                   ),
