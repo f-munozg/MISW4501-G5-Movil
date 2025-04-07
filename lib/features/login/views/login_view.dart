@@ -29,9 +29,12 @@ class _LoginViewState extends State<LoginView> {
       );
 
       if (response != null) {
-        Navigator.pushReplacement(
+        Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => HomeScreen(userRole: response)),
+          MaterialPageRoute(
+            builder: (context) => HomeScreen(userRole: response),
+          ),
+          (route) => false,
         );
       } else {
         _showErrorDialog('Credenciales incorrectas');

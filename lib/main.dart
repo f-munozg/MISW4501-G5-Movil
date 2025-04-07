@@ -1,10 +1,12 @@
 import 'package:ccp_mobile/core/providers/cart_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'routes/app_routes.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await GetStorage.init();
   runApp(
     MultiProvider(
       providers: [
