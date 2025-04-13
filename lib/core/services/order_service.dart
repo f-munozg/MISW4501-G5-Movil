@@ -1,0 +1,82 @@
+import 'dart:convert';
+
+import 'package:ccp_mobile/core/constants/app_config.dart';
+import 'package:ccp_mobile/core/models/cart_item.dart';
+import 'package:ccp_mobile/core/models/order.dart';
+import 'package:http/http.dart' as http;
+
+class OrderService {
+  /// Método para obtener todos los pedidos de un cliente (orders) ///
+  Future<List<Order>?> getOrdersByCustomerId(String id) async {
+    final url = Uri.parse('${AppConfig.apiBackOrders}/orders/user/$id');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return List<Order>.from(data.map((item) => Order.fromJson(item)));
+    } else {
+      throw Exception(
+          'Error al cargar órdenes del cliente: ${response.statusCode}');
+    }
+  }
+
+  /// Método para crear un pedido de reserva como cliente (Customer)///
+  Future<bool> createReserveCustomer(
+      String userId, List<CartItem> products) async {
+    final url = Uri.parse('${AppConfig.apiBackOrders}/orders/reserve');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'user_id': userId,
+        'products': products,
+      }),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /// Método para crear un pedido de reserva como vendedor (Seller)///
+  Future<bool> createReserveSeller(
+      String userId, String sellerId, List<CartItem> products) async {
+    final url = Uri.parse('${AppConfig.apiBackOrders}/orders/order');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'user_id': userId,
+        'seller_id': sellerId,
+        'products': products,
+      }),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /// Crear un pedido
+  Future<bool> createOrder(String orderId, String userId) async {
+    final url = Uri.parse('${AppConfig.apiBackOrders}/orders/order');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'order_id': orderId,
+        'user_id': userId,
+      }),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
