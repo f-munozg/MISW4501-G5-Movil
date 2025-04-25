@@ -1,4 +1,5 @@
 class Product {
+  final String? id;
   final String product;
   final String sku;
   final double unitValue;
@@ -9,6 +10,7 @@ class Product {
   final DateTime dateUpdate;
 
   Product({
+    this.id,
     required this.product,
     required this.sku,
     required this.unitValue,
@@ -21,6 +23,7 @@ class Product {
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
+      id: json['id'],
       product: json['product'],
       sku: json['sku'],
       unitValue: (json['unit_value'] as num).toDouble(),
@@ -34,6 +37,7 @@ class Product {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'product': product,
       'sku': sku,
       'unit_value': unitValue,

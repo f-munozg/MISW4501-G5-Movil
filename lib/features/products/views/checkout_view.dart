@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:ccp_mobile/core/constants/app_colors.dart';
+import 'package:ccp_mobile/core/services/order_service.dart';
 import 'package:ccp_mobile/core/widgets/custom_app_bar.dart';
 import 'package:ccp_mobile/features/orders/views/order_confirmation_view.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,9 @@ import 'package:provider/provider.dart';
 import '../../../core/providers/cart_provider.dart';
 
 class CheckoutView extends StatefulWidget {
-  const CheckoutView({super.key});
+  final orderService = OrderService();
+  final String? orderId;
+  CheckoutView({super.key, required this.orderId});
 
   @override
   State<CheckoutView> createState() => _CheckoutViewState();
@@ -16,6 +19,7 @@ class CheckoutView extends StatefulWidget {
 
 class _CheckoutViewState extends State<CheckoutView> {
   String? userRole;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -28,6 +32,41 @@ class _CheckoutViewState extends State<CheckoutView> {
     setState(() {
       userRole = jsonDecode(box.read('user_data') ?? '{}')['role'];
     });
+  }
+
+  Future<bool> _handleCreateOrder() async {
+
+      
+    print('orderId: ${widget.orderId}');
+
+    final box = GetStorage();
+    final userData = jsonDecode(box.read('user_data') ?? '{}');
+    final userId = userData['user_id'];
+
+    print('usuario: $userId');
+
+
+
+    // final success =
+    //     await widget.orderService.createOrder(widget.orderId ?? '', userId);
+
+    // setState(() => _isLoading = false);
+
+    // if (success) {
+    // Limpiar el carrito después de crear el pedido
+    //   Provider.of<CartProvider>(context, listen: false).clearCart();
+    //   Navigator.pushAndRemoveUntil(
+    //     context,
+    //     MaterialPageRoute(builder: (_) => const OrderConfirmationView()),
+    //     (route) => false,
+    //   );
+    // } else {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(
+    //         content: Text("No se pudo crear el pedido. Intenta nuevamente")),
+    //   );
+    // }
+    return true;
   }
 
   @override
@@ -62,7 +101,8 @@ class _CheckoutViewState extends State<CheckoutView> {
                   ),
                   title: Text(item.product.product),
                   subtitle: Text("Cantidad: ${item.quantity}"),
-                  trailing: Text("\$${(item.product.unitValue * item.quantity).toStringAsFixed(2)}"),
+                  trailing: Text(
+                      "\$${(item.product.unitValue * item.quantity).toStringAsFixed(2)}"),
                 );
               },
             ),
@@ -70,7 +110,8 @@ class _CheckoutViewState extends State<CheckoutView> {
           ? null
           : SafeArea(
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 margin: const EdgeInsets.only(bottom: 25),
                 decoration: const BoxDecoration(
                   color: Colors.white,
@@ -87,20 +128,22 @@ class _CheckoutViewState extends State<CheckoutView> {
                   children: [
                     Row(
                       children: [
-                        const Text("Cliente: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                        const Text("Cliente: ",
+                            style: TextStyle(fontWeight: FontWeight.bold)),
                         Expanded(
                           child: Text(cart.selectedClient ?? "No seleccionado"),
                         ),
                       ],
                     ),
                     const SizedBox(height: 8),
-                    
                     Row(
                       children: [
-                        const Text("Total: ", style: TextStyle(fontWeight: FontWeight.bold)),
+                        const Text("Total: ",
+                            style: TextStyle(fontWeight: FontWeight.bold)),
                         Text(
                           "\$${total.toStringAsFixed(2)}",
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18),
                         ),
                       ],
                     ),
@@ -108,30 +151,36 @@ class _CheckoutViewState extends State<CheckoutView> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async{
+                          print('presionado');
                           cart.clearCart();
+                          final response = await _handleCreateOrder();
+                          print(response);
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Pedido creado exitosamente")),
+                            const SnackBar(
+                                content: Text("Pedido creado exitosamente")),
                           );
                           // TODO: Implementar la lógica para crear el pedido
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  OrderConfirmationView(),
+                              builder: (context) => OrderConfirmationView(),
                             ),
                             (route) => false,
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          side: const BorderSide(color: AppColors.primaryColor, width: 2),
+                          side: const BorderSide(
+                              color: AppColors.primaryColor, width: 2),
                           foregroundColor: AppColors.primaryColor,
                           backgroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        child: const Text("Crear pedido"),
+                        child: _isLoading
+                            ? const CircularProgressIndicator()
+                            : const Text("Crear pedido"),
                       ),
                     ),
                   ],

@@ -21,43 +21,63 @@ class OrderService {
   }
 
   /// Método para crear un pedido de reserva como cliente (Customer)///
-  Future<bool> createReserveCustomer(
+  Future<String?> createReserveCustomer(
       String userId, List<CartItem> products) async {
+    print(userId);
+    print(products);
     final url = Uri.parse('${AppConfig.apiBackOrders}/orders/reserve');
+    final productList = products
+        .map((item) => {
+              'id': item.product.id,
+              'quantity': item.quantity,
+            })
+        .toList();
+
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'user_id': userId,
-        'products': products,
+        'products': productList,
       }),
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-      return true;
+      final orderId = jsonDecode(response.body)['id'];
+      return orderId;
     } else {
-      return false;
+      return null;
     }
   }
 
   /// Método para crear un pedido de reserva como vendedor (Seller)///
-  Future<bool> createReserveSeller(
+  Future<String?> createReserveSeller(
       String userId, String sellerId, List<CartItem> products) async {
+    print(userId);
+    print(sellerId);
+    print(products);
     final url = Uri.parse('${AppConfig.apiBackOrders}/orders/order');
+    final productList = products
+        .map((item) => {
+              'id': item.product.id,
+              'quantity': item.quantity,
+            })
+        .toList();
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'user_id': userId,
         'seller_id': sellerId,
-        'products': products,
+        'products': productList,
       }),
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-      return true;
+      final orderId = jsonDecode(response.body)['id'];
+      return orderId;
     } else {
-      return false;
+      return null;
     }
   }
 

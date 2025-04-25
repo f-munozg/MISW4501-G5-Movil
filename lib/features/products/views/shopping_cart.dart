@@ -3,16 +3,17 @@ import 'package:ccp_mobile/core/constants/app_colors.dart';
 import 'package:ccp_mobile/core/constants/app_roles.dart';
 import 'package:ccp_mobile/core/models/customer.dart';
 import 'package:ccp_mobile/core/services/customer_service.dart';
+import 'package:ccp_mobile/core/services/order_service.dart';
 import 'package:ccp_mobile/core/widgets/custom_app_bar.dart';
 import 'package:ccp_mobile/features/products/views/checkout_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
-//import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/providers/cart_provider.dart';
 
 class ShoppingCartView extends StatelessWidget {
-  const ShoppingCartView({super.key});
+  ShoppingCartView({super.key});
+  final orderService = OrderService();
 
   Future<String?> _getUserRole() async {
     final box = GetStorage();
@@ -23,9 +24,63 @@ class ShoppingCartView extends StatelessWidget {
     return decoded['role'] as String?;
   }
 
+  Future<String?> _getUserId() async {
+    final box = GetStorage();
+    final data = box.read('user_data');
+    if (data == null) return null;
+
+    final decoded = jsonDecode(data);
+    return decoded['user_id'] as String?;
+  }
+
   Future<List<Customer>> _fetchCustomers() async {
-    final customerService = CustomerService(); // o como hayas nombrado tu clase
+    final customerService = CustomerService();
     return await customerService.getCustomers() ?? [];
+  }
+
+  Future<String?> _handleReservation(BuildContext context) async {
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    final userRole = await _getUserRole();
+
+    if (userRole == AppRoles.client) {
+      print("Usuario es cliente: $userRole");
+      final userId = await _getUserId();
+      // final success = await OrderService().createReserveCustomer(
+      //   userId ?? '',
+      //   cartProvider.items,
+      // );
+      // if (success == null) {
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     const SnackBar(content: Text("No se pudo reservar el pedido")),
+      //   );
+      // }
+
+      return 'orderId';
+    } else {
+      print("Usuario es vendedor: $userRole");
+      final userId = cartProvider.selectedClient;
+      final sellerId = await _getUserId();
+      // if (userId == null) {
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     const SnackBar(
+      //         content: Text("Selecciona un cliente antes de continuar")),
+      //   );
+      //   return false;
+      // }
+      // final success = await OrderService().createReserveSeller(
+      //   userId,
+      //   sellerId ?? '',
+      //   cartProvider.items,
+      // );
+
+      // if (success == null) {
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     const SnackBar(content: Text("No se pudo reservar el pedido")),
+      //   );
+      // }
+
+      return 'orderId';
+    }
   }
 
   @override
@@ -116,7 +171,8 @@ class ShoppingCartView extends StatelessWidget {
                                       .map((customer) =>
                                           DropdownMenuItem<String>(
                                             value: customer.id,
-                                            child: Text(customer.name ?? 'Cliente'),
+                                            child: Text(
+                                                customer.name ?? 'Cliente'),
                                           ))
                                       .toList(),
                                   onChanged: (value) {
@@ -127,17 +183,46 @@ class ShoppingCartView extends StatelessWidget {
                                 );
                               }
                             },
+                          )
+                        else ...[
+                          FutureBuilder<String?>(
+                            future: _getUserId(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                return Text("Error: ${snapshot.error}");
+                              } else if (snapshot.hasData) {
+                                cart.setClient(snapshot.data!);
+                                return const SizedBox.shrink();
+                              } else {
+                                return const Text(
+                                    "No se pudo obtener el usuario.");
+                              }
+                            },
                           ),
+                        ],
                         const SizedBox(height: 8),
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const CheckoutView()),
+                            onPressed: () async {
+                              showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (_) => const Center(
+                                    child: CircularProgressIndicator()),
                               );
+                              final success = await _handleReservation(context);
+                              Navigator.pop(context);
+                              if (success != null) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => CheckoutView(orderId: success)),
+                                );
+                              }
                             },
                             style: ElevatedButton.styleFrom(
                               side: const BorderSide(

@@ -53,7 +53,7 @@ class _ProductViewState extends State<ProductView> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const ShoppingCartView()),
+              MaterialPageRoute(builder: (_) => ShoppingCartView()),
             );
           },
         ),
