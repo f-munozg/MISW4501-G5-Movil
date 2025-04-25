@@ -1,19 +1,15 @@
-import 'dart:convert';
-
 import 'package:ccp_mobile/core/widgets/custom_app_bar.dart';
-import 'package:ccp_mobile/core/widgets/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
 
-class OrderConfirmationView extends StatelessWidget {
-  const OrderConfirmationView({super.key});
+class OrderDetailView extends StatelessWidget {
+  const OrderDetailView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: "Confirmación de pedido",
-        showBackButton: false,
+        title: "Detalle de pedido",
+        showBackButton: true,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
@@ -94,31 +90,6 @@ class OrderConfirmationView extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-            ),
-            const SizedBox(height: 84),
-            OutlinedButton(
-              onPressed: () {
-                final box = GetStorage();
-                final userData = jsonDecode(box.read('user_data') ?? '{}');
-                final role = userData['role'];
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HomeScreen(userRole: role),
-                  ),
-                  (route) => false,
-                );
-              },
-              style: OutlinedButton.styleFrom(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-                foregroundColor: const Color(0xFF2E7055),
-                side: const BorderSide(color: Color(0xFF2E7055), width: 2),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: const Text("Volver al inicio"),
             ),
           ],
         ),

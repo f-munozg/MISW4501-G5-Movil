@@ -1,11 +1,10 @@
 import 'dart:convert';
 import 'package:ccp_mobile/core/constants/app_colors.dart';
 import 'package:ccp_mobile/core/widgets/custom_app_bar.dart';
-import 'package:ccp_mobile/core/widgets/home_screen.dart';
+import 'package:ccp_mobile/features/orders/views/order_confirmation_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
-//import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/providers/cart_provider.dart';
 
 class CheckoutView extends StatefulWidget {
@@ -114,11 +113,12 @@ class _CheckoutViewState extends State<CheckoutView> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text("Pedido creado exitosamente")),
                           );
+                          // TODO: Implementar la lógica para crear el pedido
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
                               builder: (context) =>
-                                  HomeScreen(userRole: userRole ?? 'Cliente'),
+                                  OrderConfirmationView(),
                             ),
                             (route) => false,
                           );
