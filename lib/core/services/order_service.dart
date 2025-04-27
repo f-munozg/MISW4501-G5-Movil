@@ -99,4 +99,19 @@ class OrderService {
       return false;
     }
   }
+
+  /// Método para obtener un pedido por ID ///
+  Future<Order?> getOrdersById(String id) async {
+    final url = Uri.parse('${AppConfig.apiBackOrders}/orders/$id');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final data = jsonDecode(response.body);
+      return Order.fromJson(data['order']);
+    } else {
+      throw Exception(
+          'Error la órden: ${response.statusCode}');
+    }
+  }
+  
 }

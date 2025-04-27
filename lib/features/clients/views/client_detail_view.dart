@@ -1,5 +1,6 @@
 import 'package:ccp_mobile/core/models/customer.dart';
 import 'package:ccp_mobile/features/clients/views/client_visits_view.dart';
+import 'package:ccp_mobile/features/clients/widgets/client_orders_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:ccp_mobile/core/widgets/custom_app_bar.dart';
 import 'package:ccp_mobile/core/constants/app_colors.dart';
@@ -83,10 +84,8 @@ class ClientDetailView extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            _buildOrderRow("PEDIDO #12347"),
-            _buildOrderRow("PEDIDO #12345"),
-            _buildOrderRow("PEDIDO #12343"),
-            _buildOrderRow("PEDIDO #12342"),
+            // Aquí agregamos el widget CustomerOrdersWidget pasando el client.id
+            ClientOrdersWidget(clientId: client.id),
           ],
         ),
       ),

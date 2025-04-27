@@ -45,6 +45,7 @@ class ShoppingCartView extends StatelessWidget {
     if (userRole == AppRoles.client) {
       print("Usuario es cliente: $userRole");
       final userId = await _getUserId();
+      print('userId: $userId');
       // final success = await OrderService().createReserveCustomer(
       //   userId ?? '',
       //   cartProvider.items,
@@ -103,10 +104,7 @@ class ShoppingCartView extends StatelessWidget {
                   leading: SizedBox(
                     width: 50,
                     height: 50,
-                    child: Image.memory(
-                      base64Decode(item.product.photo),
-                      fit: BoxFit.cover,
-                    ),
+                    child: _getImage(item.product.photo), // Aquí manejamos la foto
                   ),
                   title: Text(item.product.product),
                   subtitle: Text("Cantidad: ${item.quantity}"),
@@ -243,5 +241,14 @@ class ShoppingCartView extends StatelessWidget {
               },
             ),
     );
+  }
+
+  Widget _getImage(String base64String) {
+    try {
+      final imageBytes = base64Decode(base64String);
+      return Image.memory(imageBytes, fit: BoxFit.cover);
+    } catch (e) {
+      return const Icon(Icons.image, size: 50, color: Colors.grey); // Fallback si la imagen es inválida
+    }
   }
 }

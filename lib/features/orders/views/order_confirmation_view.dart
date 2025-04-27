@@ -1,12 +1,62 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:ccp_mobile/core/models/order.dart';
+import 'package:ccp_mobile/core/services/order_service.dart';
 import 'package:ccp_mobile/core/widgets/custom_app_bar.dart';
 import 'package:ccp_mobile/core/widgets/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+//import 'package:image_picker/image_picker.dart'; // <-- Importa image_picker
 
-class OrderConfirmationView extends StatelessWidget {
-  const OrderConfirmationView({super.key});
+class OrderConfirmationView extends StatefulWidget {
+  final String orderId; // <-- Recibe ID de la orden
+
+  const OrderConfirmationView({super.key, required this.orderId});
+
+  @override
+  State<OrderConfirmationView> createState() => _OrderConfirmationViewState();
+}
+
+class _OrderConfirmationViewState extends State<OrderConfirmationView> {
+  final orderService = OrderService();
+  Order? order;
+  bool isLoading = true;
+  File? selectedImage; // <-- Para almacenar la imagen seleccionada
+
+  @override
+  void initState() {
+    super.initState();
+    _loadOrder();
+  }
+
+  Future<void> _loadOrder() async {
+    try {
+      final fetchedOrder = await orderService.getOrdersById(widget.orderId);
+      setState(() {
+        order = fetchedOrder;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al cargar pedido: $e')),
+      );
+    }
+  }
+
+  Future<void> pickImage() async {
+    //final ImagePicker picker = ImagePicker();
+    //final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+
+    // if (image != null) {
+    //   setState(() {
+    //     selectedImage = File(image.path);
+    //   });
+    // }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,114 +65,144 @@ class OrderConfirmationView extends StatelessWidget {
         title: "Confirmación de pedido",
         showBackButton: false,
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-        child: Column(
-          children: [
-            const Text(
-              'PEDIDO #12345',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 24),
-            Row(
+      body: isLoading
+    ? const Center(child: CircularProgressIndicator())
+    : Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Text("Ítems: 253"),
-                SizedBox(width: 24),
-                Text(
-                  "Ver Detalle",
-                  style: TextStyle(
-                    decoration: TextDecoration.underline,
-                    color: Colors.black,
+              children: [
+                if (order == null) ...[
+                  const Text(
+                    'No se encontró el pedido',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.normal,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("Fecha Pedido: "),
-                Text("25/03/2025"),
-              ],
-            ),
-            const SizedBox(height: 8),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("Fecha Entrega: "),
-                Text("25/03/2025"),
-              ],
-            ),
-            const SizedBox(height: 8),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("Estado:       "),
-                Text("En Tránsito"),
-              ],
-            ),
-            const SizedBox(height: 32),
-            OutlinedButton(
-              onPressed: () {
-                // TODO: cargar comprobante
-              },
-              style: OutlinedButton.styleFrom(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-                foregroundColor: const Color(0xFF2E7055),
-                side: const BorderSide(color: Color(0xFF2E7055), width: 2),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: const Text("Cargar comprobante de pago"),
-            ),
-            const SizedBox(height: 16),
-            OutlinedButton.icon(
-              onPressed: () {
-                // TODO: seguir pedido
-              },
-              icon: const Icon(Icons.map),
-              label: const Text("Seguir pedido"),
-              style: OutlinedButton.styleFrom(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-                foregroundColor: const Color(0xFF2E7055),
-                side: const BorderSide(color: Color(0xFF2E7055), width: 2),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-            const SizedBox(height: 84),
-            OutlinedButton(
-              onPressed: () {
-                final box = GetStorage();
-                final userData = jsonDecode(box.read('user_data') ?? '{}');
-                final role = userData['role'];
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HomeScreen(userRole: role),
+                  const SizedBox(height: 32),
+                ] else ...[
+                  Text(
+                    'PEDIDO #${order!.id}',
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
                   ),
-                  (route) => false,
-                );
-              },
-              style: OutlinedButton.styleFrom(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-                foregroundColor: const Color(0xFF2E7055),
-                side: const BorderSide(color: Color(0xFF2E7055), width: 2),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  const SizedBox(height: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Text("Ítems: 253"),
+                      SizedBox(width: 24),
+                      Text(
+                        "Ver Detalle",
+                        style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("Fecha Pedido: "),
+                      Text(_formatDate(order!.dateOrder)),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("Fecha Entrega: "),
+                      Text(_formatDate(order!.dateDelivery)),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("Estado: "),
+                      Text(order!.status),
+                    ],
+                  ),
+                  const SizedBox(height: 32),
+                  OutlinedButton(
+                    onPressed: pickImage,
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 14),
+                      foregroundColor: const Color(0xFF2E7055),
+                      side:
+                          const BorderSide(color: Color(0xFF2E7055), width: 2),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text("Cargar comprobante de pago"),
+                  ),
+                  const SizedBox(height: 16),
+                  if (selectedImage != null)
+                    Image.file(
+                      selectedImage!,
+                      height: 200,
+                    ),
+                  OutlinedButton.icon(
+                    onPressed: () {
+                      // TODO: seguir pedido
+                    },
+                    icon: const Icon(Icons.map),
+                    label: const Text("Seguir pedido"),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 14),
+                      foregroundColor: const Color(0xFF2E7055),
+                      side:
+                          const BorderSide(color: Color(0xFF2E7055), width: 2),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 84),
+                ],
+                OutlinedButton(
+                  onPressed: () {
+                    final box = GetStorage();
+                    final userData = jsonDecode(box.read('user_data') ?? '{}');
+                    final role = userData['role'];
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HomeScreen(userRole: role),
+                      ),
+                      (route) => false,
+                    );
+                  },
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 14),
+                    foregroundColor: const Color(0xFF2E7055),
+                    side: const BorderSide(color: Color(0xFF2E7055), width: 2),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text("Volver al inicio"),
                 ),
-              ),
-              child: const Text("Volver al inicio"),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
+  }
+
+  String _formatDate(DateTime date) {
+    return "${date.day}/${date.month}/${date.year}";
   }
 }

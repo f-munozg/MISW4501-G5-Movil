@@ -35,8 +35,6 @@ class _CheckoutViewState extends State<CheckoutView> {
   }
 
   Future<bool> _handleCreateOrder() async {
-
-      
     print('orderId: ${widget.orderId}');
 
     final box = GetStorage();
@@ -44,8 +42,6 @@ class _CheckoutViewState extends State<CheckoutView> {
     final userId = userData['user_id'];
 
     print('usuario: $userId');
-
-
 
     // final success =
     //     await widget.orderService.createOrder(widget.orderId ?? '', userId);
@@ -94,10 +90,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                   leading: SizedBox(
                     width: 50,
                     height: 50,
-                    child: Image.memory(
-                      base64Decode(item.product.photo),
-                      fit: BoxFit.cover,
-                    ),
+                    child: _getImage(item.product.photo),
                   ),
                   title: Text(item.product.product),
                   subtitle: Text("Cantidad: ${item.quantity}"),
@@ -151,7 +144,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () async{
+                        onPressed: () async {
                           print('presionado');
                           cart.clearCart();
                           final response = await _handleCreateOrder();
@@ -164,7 +157,9 @@ class _CheckoutViewState extends State<CheckoutView> {
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => OrderConfirmationView(),
+                              builder: (context) => OrderConfirmationView(
+                                orderId: "asdjkahsdka",
+                              ),
                             ),
                             (route) => false,
                           );
@@ -188,5 +183,15 @@ class _CheckoutViewState extends State<CheckoutView> {
               ),
             ),
     );
+  }
+
+  Widget _getImage(String base64String) {
+    try {
+      final imageBytes = base64Decode(base64String);
+      return Image.memory(imageBytes, fit: BoxFit.cover);
+    } catch (e) {
+      return const Icon(Icons.image,
+          size: 50, color: Colors.grey); 
+    }
   }
 }
