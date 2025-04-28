@@ -1,5 +1,6 @@
 import 'package:ccp_mobile/core/models/customer.dart';
 import 'package:ccp_mobile/features/clients/views/client_visits_view.dart';
+import 'package:ccp_mobile/features/clients/widgets/client_orders_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:ccp_mobile/core/widgets/custom_app_bar.dart';
 import 'package:ccp_mobile/core/constants/app_colors.dart';
@@ -49,7 +50,7 @@ class ClientDetailView extends StatelessWidget {
                   );
                 }),
                 _roundedOutlinedButton("PQRS", () {
-                  // Acción futura
+                  // TODO: Implementar lógica para PQRS
                 }),
               ],
             ),
@@ -83,15 +84,17 @@ class ClientDetailView extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            _buildOrderRow("PEDIDO #12347"),
-            _buildOrderRow("PEDIDO #12345"),
-            _buildOrderRow("PEDIDO #12343"),
-            _buildOrderRow("PEDIDO #12342"),
+            // <-- Aquí envolvemos el ClientOrdersWidget en un SizedBox -->
+            SizedBox(
+              height: 300, // Ajusta la altura según cuántas órdenes quieras mostrar
+              child: ClientOrdersWidget(clientId: client.userId),
+            ),
           ],
         ),
       ),
     );
   }
+
 
   Widget _buildRow(String label, String value) {
     return Padding(
@@ -122,25 +125,6 @@ class ClientDetailView extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       ),
       child: Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
-    );
-  }
-
-  Widget _buildOrderRow(String orderId) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(orderId),
-          const Text(
-            "Ver Detalle",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              decoration: TextDecoration.underline,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

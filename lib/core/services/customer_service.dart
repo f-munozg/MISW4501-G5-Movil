@@ -70,11 +70,10 @@ class CustomerService {
     }
   }
 
+  ///Método para obtener los clientes por Id(customers)///
   Future<CustomerWithStore> getCustomerById(String id) async {
     final url = Uri.parse('${AppConfig.apiBackCustomers}/customers/$id');
     final response = await http.get(url);
-
-    print(response.body);
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);

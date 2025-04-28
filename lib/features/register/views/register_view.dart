@@ -7,14 +7,23 @@ class RegisterView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final emailController = TextEditingController();
+    final passwordController = TextEditingController();
+    final confirmPasswordController = TextEditingController();
+
     return Scaffold(
       appBar: const CustomAppBar(
         title: "Registro",
         showBackButton: true,
       ),
-      body: const Padding(
-        padding: EdgeInsets.all(16.0),
-        child: RegisterForm(),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: RegisterForm(
+          emailController: emailController,
+          passwordController: passwordController,
+          confirmPasswordController: confirmPasswordController,
+          onSubmit: () {},
+        ),
       ),
     );
   }

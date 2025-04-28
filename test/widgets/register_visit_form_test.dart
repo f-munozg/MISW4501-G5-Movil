@@ -25,8 +25,5 @@ void main() {
     // Simula tap en botón de registrar
     await tester.tap(find.byKey(const Key('submitButton')));
     await tester.pump();
-
-    // Este test solo valida render y que el botón se presiona
-    // Puedes agregar lógica adicional si deseas verificar resultados de validación
   });
 }

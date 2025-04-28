@@ -15,7 +15,9 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   List<BottomNavItem> getMenuItems() {
-    return widget.userRole == 'Cliente' ? AppMenu.clientMenu : AppMenu.sellerMenu; 
+    return widget.userRole == 'Cliente'
+        ? AppMenu.clientMenu
+        : AppMenu.sellerMenu;
   }
 
   @override
@@ -23,21 +25,18 @@ class _HomeScreenState extends State<HomeScreen> {
     final menuItems = getMenuItems();
 
     return Scaffold(
-      body: IndexedStack(
-        index: _selectedIndex,
-        children: menuItems.map((item) => item.screen).toList(),
-      ),
+      body: menuItems[_selectedIndex]
+          .screen, // ← ¡Cada cambio de tab crea un nuevo widget!
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: AppColors.primaryColor,
         unselectedItemColor: Colors.grey,
         currentIndex: _selectedIndex,
         onTap: (index) => setState(() => _selectedIndex = index),
-        items: menuItems.map((item) => BottomNavigationBarItem(icon: Icon(item.icon), label: item.label)).toList(),
+        items: menuItems
+            .map((item) => BottomNavigationBarItem(
+                icon: Icon(item.icon), label: item.label))
+            .toList(),
       ),
     );
   }
 }
-
-
-
-

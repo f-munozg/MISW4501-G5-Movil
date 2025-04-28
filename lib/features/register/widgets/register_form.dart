@@ -1,11 +1,21 @@
-import 'package:ccp_mobile/core/services/customer_service.dart';
-import 'package:ccp_mobile/core/widgets/loading_spinner.dart';
-import 'package:ccp_mobile/features/login/views/login_view.dart';
 import 'package:flutter/material.dart';
+import 'package:ccp_mobile/core/services/customer_service.dart';
 import '../../../core/constants/app_colors.dart';
+import 'package:ccp_mobile/features/login/views/login_view.dart';
 
 class RegisterForm extends StatefulWidget {
-  const RegisterForm({super.key});
+  final TextEditingController emailController;
+  final TextEditingController passwordController;
+  final TextEditingController confirmPasswordController;
+  final void Function() onSubmit;
+
+  const RegisterForm({
+    super.key,
+    required this.emailController,
+    required this.passwordController,
+    required this.confirmPasswordController,
+    required this.onSubmit,
+  });
 
   @override
   State<RegisterForm> createState() => _RegisterFormState();
@@ -13,12 +23,6 @@ class RegisterForm extends StatefulWidget {
 
 class _RegisterFormState extends State<RegisterForm> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-      TextEditingController();
-
   bool _isLoading = false;
 
   void _handleRegister() async {
@@ -26,8 +30,8 @@ class _RegisterFormState extends State<RegisterForm> {
       setState(() => _isLoading = true);
 
       final customerService = CustomerService();
-      final email = emailController.text.trim();
-      final password = passwordController.text.trim();
+      final email = widget.emailController.text.trim();
+      final password = widget.passwordController.text.trim();
       final username = email.split('@').first;
 
       final success =
@@ -69,16 +73,10 @@ class _RegisterFormState extends State<RegisterForm> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // TextFormField(
-                  //   controller: nameController,
-                  //   decoration: const InputDecoration(labelText: 'Nombre'),
-                  //   validator: (value) => value == null || value.isEmpty
-                  //       ? 'Campo requerido'
-                  //       : null,
-                  // ),
-                  // const SizedBox(height: 10),
+                  // Asignamos una clave única al campo de correo electrónico
                   TextFormField(
-                    controller: emailController,
+                    key: const Key('loginEmailField'),
+                    controller: widget.emailController,
                     decoration:
                         const InputDecoration(labelText: 'Correo Electrónico'),
                     validator: (value) {
@@ -92,8 +90,10 @@ class _RegisterFormState extends State<RegisterForm> {
                     },
                   ),
                   const SizedBox(height: 10),
+                  // Asignamos una clave única al campo de contraseña
                   TextFormField(
-                    controller: passwordController,
+                    key: const Key('loginPasswordField'),
+                    controller: widget.passwordController,
                     obscureText: true,
                     decoration: const InputDecoration(labelText: 'Contraseña'),
                     validator: (value) => value == null || value.isEmpty
@@ -101,18 +101,22 @@ class _RegisterFormState extends State<RegisterForm> {
                         : null,
                   ),
                   const SizedBox(height: 10),
+                  // Asignamos una clave única al campo de confirmación de contraseña
                   TextFormField(
-                    controller: confirmPasswordController,
+                    key: const Key('loginConfirmPasswordField'),
+                    controller: widget.confirmPasswordController,
                     obscureText: true,
                     decoration: const InputDecoration(
                         labelText: 'Confirmar Contraseña'),
-                    validator: (value) => value != passwordController.text
+                    validator: (value) => value != widget.passwordController.text
                         ? 'Las contraseñas no coinciden'
                         : null,
                   ),
                   const SizedBox(height: 20),
+                  // Asignamos una clave única al botón de registrar
                   Center(
                     child: ElevatedButton(
+                      key: const Key('loginButton'),
                       onPressed: _handleRegister,
                       child: const Text(
                         'Registrar',
@@ -127,9 +131,8 @@ class _RegisterFormState extends State<RegisterForm> {
         ),
         if (_isLoading)
           const Center(
-            child: LoadingSpinner(
+            child: CircularProgressIndicator(
               color: AppColors.primaryColor,
-              size: 20.0,
             ),
           ),
       ],
