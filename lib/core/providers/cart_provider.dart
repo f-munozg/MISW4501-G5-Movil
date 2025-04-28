@@ -1,6 +1,6 @@
 import 'package:ccp_mobile/core/models/cart_item.dart';
 import 'package:flutter/material.dart';
-import '../models/product.dart'; // Asegúrate que tu Product está aquí
+import '../models/product.dart';
 
 class CartProvider extends ChangeNotifier {
   final List<CartItem> _items = [];

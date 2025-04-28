@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:ccp_mobile/core/models/product.dart';
 import 'package:ccp_mobile/core/providers/cart_provider.dart';
 import 'package:ccp_mobile/core/services/stock_service.dart';
@@ -37,6 +38,16 @@ class _ProductViewState extends State<ProductView> {
     }
   }
 
+  // Método para intentar decodificar la imagen de forma segura
+  Uint8List? _decodeBase64Image(String base64String) {
+    try {
+      return base64Decode(base64String);
+    } catch (e) {
+      print('Error al decodificar imagen: $e');
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,7 +64,7 @@ class _ProductViewState extends State<ProductView> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const ShoppingCartView()),
+              MaterialPageRoute(builder: (_) => ShoppingCartView()),
             );
           },
         ),
@@ -72,6 +83,8 @@ class _ProductViewState extends State<ProductView> {
                 ),
                 itemBuilder: (context, index) {
                   final product = _products[index];
+                  final decodedImage = _decodeBase64Image(product.photo);
+
                   return Card(
                     elevation: 4,
                     shape: RoundedRectangleBorder(
@@ -85,11 +98,21 @@ class _ProductViewState extends State<ProductView> {
                               child: ClipRRect(
                                 borderRadius: const BorderRadius.vertical(
                                     top: Radius.circular(10)),
-                                child: Image.memory(
-                                  base64Decode(product.photo),
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                ),
+                                child: decodedImage != null
+                                    ? Image.memory(
+                                        decodedImage,
+                                        fit: BoxFit.cover,
+                                        width: double.infinity,
+                                      )
+                                    : Container(
+                                        color: Colors.grey[200],
+                                        width: double.infinity,
+                                        child: const Icon(
+                                          Icons.image_not_supported,
+                                          size: 50,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
                               ),
                             ),
                             Padding(

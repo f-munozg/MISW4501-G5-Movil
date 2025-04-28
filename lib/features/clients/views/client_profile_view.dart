@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:ccp_mobile/core/services/customer_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
-//import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/widgets/custom_app_bar.dart';
 import '../widgets/client_profile_form.dart';
 
