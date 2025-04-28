@@ -11,9 +11,12 @@ class OrderService {
     final url = Uri.parse('${AppConfig.apiBackOrders}/orders/user/$id');
     final response = await http.get(url);
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       final data = jsonDecode(response.body);
-      return List<Order>.from(data.map((item) => Order.fromJson(item)));
+      final dataList = data['orders'] as List;
+      return List<Order>.from(dataList.map((item) => Order.fromJson(item)));
+    } else if (response.statusCode == 404) {
+      return [];
     } else {
       throw Exception(
           'Error al cargar órdenes del cliente: ${response.statusCode}');
@@ -23,8 +26,6 @@ class OrderService {
   /// Método para crear un pedido de reserva como cliente (Customer)///
   Future<String?> createReserveCustomer(
       String userId, List<CartItem> products) async {
-    print(userId);
-    print(products);
     final url = Uri.parse('${AppConfig.apiBackOrders}/orders/reserve');
     final productList = products
         .map((item) => {
@@ -33,13 +34,15 @@ class OrderService {
             })
         .toList();
 
+    final body = jsonEncode({
+      'user_id': userId,
+      'products': productList,
+    });
+
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'user_id': userId,
-        'products': productList,
-      }),
+      body: body,
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
@@ -53,26 +56,22 @@ class OrderService {
   /// Método para crear un pedido de reserva como vendedor (Seller)///
   Future<String?> createReserveSeller(
       String userId, String sellerId, List<CartItem> products) async {
-    print(userId);
-    print(sellerId);
-    print(products);
-    final url = Uri.parse('${AppConfig.apiBackOrders}/orders/order');
+    final url = Uri.parse('${AppConfig.apiBackOrders}/orders/reserve');
     final productList = products
         .map((item) => {
               'id': item.product.id,
               'quantity': item.quantity,
             })
         .toList();
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'user_id': userId,
-        'seller_id': sellerId,
-        'products': productList,
-      }),
-    );
+    final body = jsonEncode({
+      'user_id': userId,
+      'products': productList,
+    });
+    final response = await http.post(url,
+        headers: {'Content-Type': 'application/json'}, body: body);
 
+    print('Response: ${response.body}');
+    print('Status Code: ${response.statusCode}');
     if (response.statusCode == 200 || response.statusCode == 201) {
       final orderId = jsonDecode(response.body)['id'];
       return orderId;
@@ -109,9 +108,7 @@ class OrderService {
       final data = jsonDecode(response.body);
       return Order.fromJson(data['order']);
     } else {
-      throw Exception(
-          'Error la órden: ${response.statusCode}');
+      throw Exception('Error la órden: ${response.statusCode}');
     }
   }
-  
 }

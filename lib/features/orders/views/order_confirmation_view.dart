@@ -3,14 +3,15 @@ import 'dart:io';
 
 import 'package:ccp_mobile/core/models/order.dart';
 import 'package:ccp_mobile/core/services/order_service.dart';
+import 'package:ccp_mobile/core/utils/formatters.dart';
 import 'package:ccp_mobile/core/widgets/custom_app_bar.dart';
 import 'package:ccp_mobile/core/widgets/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
-//import 'package:image_picker/image_picker.dart'; // <-- Importa image_picker
+import 'package:image_picker/image_picker.dart';
 
 class OrderConfirmationView extends StatefulWidget {
-  final String orderId; // <-- Recibe ID de la orden
+  final String orderId;
 
   const OrderConfirmationView({super.key, required this.orderId});
 
@@ -22,7 +23,7 @@ class _OrderConfirmationViewState extends State<OrderConfirmationView> {
   final orderService = OrderService();
   Order? order;
   bool isLoading = true;
-  File? selectedImage; // <-- Para almacenar la imagen seleccionada
+  File? selectedImage;
 
   @override
   void initState() {
@@ -48,14 +49,14 @@ class _OrderConfirmationViewState extends State<OrderConfirmationView> {
   }
 
   Future<void> pickImage() async {
-    //final ImagePicker picker = ImagePicker();
-    //final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
-    // if (image != null) {
-    //   setState(() {
-    //     selectedImage = File(image.path);
-    //   });
-    // }
+    if (image != null) {
+      setState(() {
+        selectedImage = File(image.path);
+      });
+    }
   }
 
   @override
@@ -111,7 +112,7 @@ class _OrderConfirmationViewState extends State<OrderConfirmationView> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text("Fecha Pedido: "),
-                      Text(_formatDate(order!.dateOrder)),
+                      Text(formatDateTime(order!.dateOrder)),
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -119,7 +120,7 @@ class _OrderConfirmationViewState extends State<OrderConfirmationView> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text("Fecha Entrega: "),
-                      Text(_formatDate(order!.dateDelivery)),
+                      Text(formatDateTime(order!.dateDelivery)),
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -127,7 +128,7 @@ class _OrderConfirmationViewState extends State<OrderConfirmationView> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text("Estado: "),
-                      Text(order!.status),
+                      Text(parseStatus(order!.status)),
                     ],
                   ),
                   const SizedBox(height: 32),
@@ -200,9 +201,5 @@ class _OrderConfirmationViewState extends State<OrderConfirmationView> {
         ),
       ),
     );
-  }
-
-  String _formatDate(DateTime date) {
-    return "${date.day}/${date.month}/${date.year}";
   }
 }

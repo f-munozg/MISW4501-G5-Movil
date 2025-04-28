@@ -2,9 +2,11 @@ import 'dart:convert';
 
 import 'package:ccp_mobile/core/models/order.dart';
 import 'package:ccp_mobile/core/services/order_service.dart';
+import 'package:ccp_mobile/features/orders/views/order_detail_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import '../../../core/widgets/custom_app_bar.dart';
+import 'package:ccp_mobile/core/utils/formatters.dart';
 
 class OrderView extends StatefulWidget {
   const OrderView({super.key});
@@ -15,13 +17,27 @@ class OrderView extends StatefulWidget {
 
 class _OrderViewState extends State<OrderView> {
   late Future<List<Order>?> _ordersFuture;
+
   @override
   void initState() {
     super.initState();
+    _loadOrders();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadOrders();
+  }
+
+  void _loadOrders() {
     final box = GetStorage();
     final userData = jsonDecode(box.read('user_data') ?? '{}');
     final customerId = userData['user_id'];
-    _ordersFuture = OrderService().getOrdersByCustomerId(customerId);
+
+    setState(() {
+      _ordersFuture = OrderService().getOrdersByCustomerId(customerId);
+    });
   }
 
   @override
@@ -49,15 +65,16 @@ class _OrderViewState extends State<OrderView> {
             itemBuilder: (context, index) {
               final order = orders[index];
               return ListTile(
-                title: Text(order.id),
+                title: Text("Pedido ${formatDateTime(order.dateOrder)}"),
+                subtitle: Text("Estado: ${parseStatus(order.status)}"),
                 trailing: const Icon(Icons.arrow_forward_ios),
                 onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (_) => ,
-                  //   ),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => OrderDetailView(orderId: order.id),
+                    ),
+                  );
                 },
               );
             },

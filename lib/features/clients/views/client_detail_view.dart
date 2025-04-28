@@ -50,7 +50,7 @@ class ClientDetailView extends StatelessWidget {
                   );
                 }),
                 _roundedOutlinedButton("PQRS", () {
-                  // Acción futura
+                  // TODO: Implementar lógica para PQRS
                 }),
               ],
             ),
@@ -84,13 +84,17 @@ class ClientDetailView extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            // Aquí agregamos el widget CustomerOrdersWidget pasando el client.id
-            ClientOrdersWidget(clientId: client.id),
+            // <-- Aquí envolvemos el ClientOrdersWidget en un SizedBox -->
+            SizedBox(
+              height: 300, // Ajusta la altura según cuántas órdenes quieras mostrar
+              child: ClientOrdersWidget(clientId: client.userId),
+            ),
           ],
         ),
       ),
     );
   }
+
 
   Widget _buildRow(String label, String value) {
     return Padding(
@@ -121,25 +125,6 @@ class ClientDetailView extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
       ),
       child: Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
-    );
-  }
-
-  Widget _buildOrderRow(String orderId) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(orderId),
-          const Text(
-            "Ver Detalle",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              decoration: TextDecoration.underline,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

@@ -1,5 +1,5 @@
 class Product {
-  final String? id;
+  final String id;
   final String product;
   final String sku;
   final double unitValue;
@@ -10,7 +10,7 @@ class Product {
   final DateTime dateUpdate;
 
   Product({
-    this.id,
+    required this.id,
     required this.product,
     required this.sku,
     required this.unitValue,

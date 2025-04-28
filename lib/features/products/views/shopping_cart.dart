@@ -43,44 +43,43 @@ class ShoppingCartView extends StatelessWidget {
     final userRole = await _getUserRole();
 
     if (userRole == AppRoles.client) {
-      print("Usuario es cliente: $userRole");
       final userId = await _getUserId();
-      print('userId: $userId');
-      // final success = await OrderService().createReserveCustomer(
-      //   userId ?? '',
-      //   cartProvider.items,
-      // );
-      // if (success == null) {
-      //   ScaffoldMessenger.of(context).showSnackBar(
-      //     const SnackBar(content: Text("No se pudo reservar el pedido")),
-      //   );
-      // }
+      final success = await OrderService().createReserveCustomer(
+        userId ?? '',
+        cartProvider.items,
+      );
+      if (success == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("No se pudo reservar el pedido")),
+        );
+      }
 
-      return 'orderId';
+      return success;
     } else {
       print("Usuario es vendedor: $userRole");
       final userId = cartProvider.selectedClient;
+      print("Usuario es vendedor: $userId");
       final sellerId = await _getUserId();
-      // if (userId == null) {
-      //   ScaffoldMessenger.of(context).showSnackBar(
-      //     const SnackBar(
-      //         content: Text("Selecciona un cliente antes de continuar")),
-      //   );
-      //   return false;
-      // }
-      // final success = await OrderService().createReserveSeller(
-      //   userId,
-      //   sellerId ?? '',
-      //   cartProvider.items,
-      // );
+      if (userId == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text("Selecciona un cliente antes de continuar")),
+        );
+        return null;
+      }
+      final success = await OrderService().createReserveSeller(
+        userId,
+        sellerId ?? '',
+        cartProvider.items,
+      );
 
-      // if (success == null) {
-      //   ScaffoldMessenger.of(context).showSnackBar(
-      //     const SnackBar(content: Text("No se pudo reservar el pedido")),
-      //   );
-      // }
+      if (success == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("No se pudo reservar el pedido")),
+        );
+      }
 
-      return 'orderId';
+      return success;
     }
   }
 
@@ -168,7 +167,7 @@ class ShoppingCartView extends StatelessWidget {
                                   items: customers
                                       .map((customer) =>
                                           DropdownMenuItem<String>(
-                                            value: customer.id,
+                                            value: customer.userId,
                                             child: Text(
                                                 customer.name ?? 'Cliente'),
                                           ))

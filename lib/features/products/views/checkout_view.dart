@@ -27,6 +27,14 @@ class _CheckoutViewState extends State<CheckoutView> {
     _loadUserRole();
   }
 
+  @override
+  void dispose() {
+    final cart = Provider.of<CartProvider>(context, listen: false);
+    cart.clearCart();
+    super.dispose();
+  }
+
+  // Cargar usuario desde el almacenamiento local
   Future<void> _loadUserRole() async {
     final box = GetStorage();
     setState(() {
@@ -34,35 +42,18 @@ class _CheckoutViewState extends State<CheckoutView> {
     });
   }
 
+  // Crear pedido
   Future<bool> _handleCreateOrder() async {
-    print('orderId: ${widget.orderId}');
-
     final box = GetStorage();
     final userData = jsonDecode(box.read('user_data') ?? '{}');
     final userId = userData['user_id'];
+    final orderId = widget.orderId ?? '';
 
-    print('usuario: $userId');
+    final success = await widget.orderService.createOrder(orderId, userId);
 
-    // final success =
-    //     await widget.orderService.createOrder(widget.orderId ?? '', userId);
+    setState(() => _isLoading = false);
 
-    // setState(() => _isLoading = false);
-
-    // if (success) {
-    // Limpiar el carrito después de crear el pedido
-    //   Provider.of<CartProvider>(context, listen: false).clearCart();
-    //   Navigator.pushAndRemoveUntil(
-    //     context,
-    //     MaterialPageRoute(builder: (_) => const OrderConfirmationView()),
-    //     (route) => false,
-    //   );
-    // } else {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(
-    //         content: Text("No se pudo crear el pedido. Intenta nuevamente")),
-    //   );
-    // }
-    return true;
+    return success;
   }
 
   @override
@@ -145,24 +136,28 @@ class _CheckoutViewState extends State<CheckoutView> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () async {
-                          print('presionado');
                           cart.clearCart();
                           final response = await _handleCreateOrder();
-                          print(response);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text("Pedido creado exitosamente")),
-                          );
-                          // TODO: Implementar la lógica para crear el pedido
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => OrderConfirmationView(
-                                orderId: "asdjkahsdka",
+                          if (response) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text("Pedido creado exitosamente")),
+                            );
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => OrderConfirmationView(
+                                  orderId: widget.orderId ?? '',
+                                ),
                               ),
-                            ),
-                            (route) => false,
-                          );
+                              (route) => false,
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text("Error al crear el pedido")),
+                            );
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           side: const BorderSide(
@@ -190,8 +185,7 @@ class _CheckoutViewState extends State<CheckoutView> {
       final imageBytes = base64Decode(base64String);
       return Image.memory(imageBytes, fit: BoxFit.cover);
     } catch (e) {
-      return const Icon(Icons.image,
-          size: 50, color: Colors.grey); 
+      return const Icon(Icons.image, size: 50, color: Colors.grey);
     }
   }
 }

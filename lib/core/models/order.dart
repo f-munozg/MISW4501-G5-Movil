@@ -1,7 +1,7 @@
 class Order {
   final String id;
   final String customerId;
-  final String sellerId;
+  final String? sellerId;
   final DateTime dateOrder;
   final DateTime dateDelivery;
   final String status;
@@ -9,7 +9,7 @@ class Order {
   Order({
     required this.id,
     required this.customerId,
-    required this.sellerId,
+    this.sellerId,
     required this.dateOrder,
     required this.dateDelivery,
     required this.status,
