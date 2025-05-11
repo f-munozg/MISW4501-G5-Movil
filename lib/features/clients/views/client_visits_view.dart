@@ -12,7 +12,6 @@ class ClientVisitsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Visitas mockeadas
     final visits = [
       {"date": "25/03/2025"},
       {"date": "20/03/2025"},
@@ -34,7 +33,6 @@ class ClientVisitsView extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
-                    // Navegar a la vista de ruta (puedes personalizar esta parte)
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -58,7 +56,7 @@ class ClientVisitsView extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const RegisterVisitView(),
+                        builder: (context) => RegisterVisitView(client: client),
                       ),
                     );
                   },

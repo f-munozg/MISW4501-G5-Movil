@@ -1,7 +1,10 @@
+import 'package:ccp_mobile/core/models/customer.dart';
 import 'package:flutter/material.dart';
 
 class RegisterVisitForm extends StatefulWidget {
-  const RegisterVisitForm({super.key});
+  final Customer client;
+
+  const RegisterVisitForm({super.key, required this.client});
 
   @override
   State<RegisterVisitForm> createState() => _RegisterVisitFormState();
@@ -9,8 +12,7 @@ class RegisterVisitForm extends StatefulWidget {
 
 class _RegisterVisitFormState extends State<RegisterVisitForm> {
   bool visitaRealizada = true;
-  bool pedido = true;
-  bool reserva = false;
+  bool tipoOrdenP= true;
   final TextEditingController observacionesController = TextEditingController();
 
   @override
@@ -22,18 +24,13 @@ class _RegisterVisitFormState extends State<RegisterVisitForm> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Center(
-                child: Text(
-                  "CLIENTE #34059",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-              ),
               const SizedBox(height: 24),
-              _infoRow("Nombre:", "Pedro Perez"),
-              _infoRow("Dirección:", "Calle Carrera"),
-              _infoRow("Zona:", "Centro"),
+              _infoRow("Nombre:", widget.client.name ?? "N/A"),
+              _infoRow("Dirección:", "Calle 50 Carrera 100"),
+              _infoRow("CC:", widget.client.identificationNumber ?? "N/A"),
               const SizedBox(height: 20),
-              const Text("Visita:", style: TextStyle(fontWeight: FontWeight.w600)),
+              const Text("Visita:",
+                  style: TextStyle(fontWeight: FontWeight.w600)),
               _toggleOption("Realizada", visitaRealizada, () {
                 setState(() {
                   visitaRealizada = true;
@@ -45,15 +42,21 @@ class _RegisterVisitFormState extends State<RegisterVisitForm> {
                 });
               }),
               const SizedBox(height: 12),
-              const Text("Pedido", style: TextStyle(fontWeight: FontWeight.w600)),
-              _toggleOption("Reserva", reserva, () {
+              const Text("Tipo Orden:",
+                  style: TextStyle(fontWeight: FontWeight.w600)),
+              _toggleOption("Pedido", tipoOrdenP, () {
                 setState(() {
-                  reserva = !reserva;
-                  pedido = !reserva;
+                  tipoOrdenP = true;
+                });
+              }),
+              _toggleOption("Reserva", !tipoOrdenP, () {
+                setState(() {
+                  tipoOrdenP = false;
                 });
               }),
               const SizedBox(height: 20),
-              const Text("Observaciones", style: TextStyle(fontWeight: FontWeight.w600)),
+              const Text("Observaciones",
+                  style: TextStyle(fontWeight: FontWeight.w600)),
               const SizedBox(height: 8),
               TextField(
                 controller: observacionesController,
@@ -89,7 +92,8 @@ class _RegisterVisitFormState extends State<RegisterVisitForm> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 32, vertical: 16),
                     elevation: 0,
                   ),
                   child: const Text(
@@ -110,7 +114,9 @@ class _RegisterVisitFormState extends State<RegisterVisitForm> {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          Expanded(child: Text(label, style: const TextStyle(fontWeight: FontWeight.w500))),
+          Expanded(
+              child: Text(label,
+                  style: const TextStyle(fontWeight: FontWeight.w500))),
           Expanded(child: Text(value, textAlign: TextAlign.right)),
         ],
       ),
@@ -137,9 +143,4 @@ class _RegisterVisitFormState extends State<RegisterVisitForm> {
       ),
     );
   }
-}
-
-// Helper para aplicar BoxDecoration en InputDecoration
-extension on BoxDecoration {
-  InputDecoration let(InputDecoration Function(BoxDecoration) fn) => fn(this);
 }

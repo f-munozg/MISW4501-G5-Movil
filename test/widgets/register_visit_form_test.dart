@@ -1,3 +1,4 @@
+import 'package:ccp_mobile/core/models/customer.dart';
 import 'package:ccp_mobile/features/clients/widgets/register_visit_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -5,9 +6,16 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   testWidgets('Formulario de Registrar Visita funciona correctamente', (WidgetTester tester) async {
     await tester.pumpWidget(
-      const MaterialApp(
+      MaterialApp(
         home: Scaffold(
-          body: RegisterVisitForm(),
+          body: RegisterVisitForm(client: Customer(
+            id: '1',
+            name: 'Cliente de Prueba',
+            identificationNumber: '123456789',
+            assignedSeller: 'Vendedor Asignado',
+            observations: 'Sin observaciones',
+            userId: 'user123',
+          )),
         ),
       ),
     );

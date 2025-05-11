@@ -7,6 +7,7 @@ import 'package:ccp_mobile/core/services/order_service.dart';
 import 'package:ccp_mobile/core/utils/formatters.dart';
 import 'package:ccp_mobile/core/widgets/custom_app_bar.dart';
 import 'package:ccp_mobile/features/orders/views/order_confirmation_view.dart';
+import 'package:ccp_mobile/features/orders/views/order_detail_product_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
@@ -108,14 +109,28 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                         const SizedBox(height: 24),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
+                          children: [
                             Text("Ítems: 253"),
                             SizedBox(width: 24),
-                            Text(
-                              "Ver Detalle",
-                              style: TextStyle(
-                                decoration: TextDecoration.underline,
-                                color: Colors.black,
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            OrderDetailProductView(
+                                                orderId: order!.id)));
+                              },
+                              child: Row(
+                                children: [
+                                  const Text(
+                                    "Ver Detalle ",
+                                    style: TextStyle(
+                                      decoration: TextDecoration.underline,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  const Icon(Icons.open_in_new, size: 14),
+                                ],
                               ),
                             ),
                           ],
