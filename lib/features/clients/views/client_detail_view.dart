@@ -1,10 +1,11 @@
 import 'package:ccp_mobile/core/models/customer.dart';
+import 'package:ccp_mobile/features/clients/views/client_recomendations_view.dart';
 import 'package:ccp_mobile/features/clients/views/client_visits_view.dart';
 import 'package:ccp_mobile/features/clients/widgets/client_orders_widget.dart';
+import 'package:ccp_mobile/features/pqrs/views/pqrs_view.dart';
 import 'package:flutter/material.dart';
 import 'package:ccp_mobile/core/widgets/custom_app_bar.dart';
 import 'package:ccp_mobile/core/constants/app_colors.dart';
-
 
 class ClientDetailView extends StatelessWidget {
   final Customer client;
@@ -50,17 +51,37 @@ class ClientDetailView extends StatelessWidget {
                   );
                 }),
                 _roundedOutlinedButton("PQRS", () {
-                  // TODO: Implementar lógica para PQRS
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => PqrsView(client: client),
+                    ),
+                  );
                 }),
               ],
             ),
             const SizedBox(height: 16),
             const Divider(),
-            const Text(
-              "Ver sugerencias de compra",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                decoration: TextDecoration.underline,
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ClientRecomendationsView(client: client),
+                  ),
+                );
+              },
+              child: const Row(
+                children: [
+                  Icon(Icons.shopping_cart),
+                  SizedBox(width: 8),
+                  Text(
+                    "Ver sugerencias de compra",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 16),
@@ -71,11 +92,21 @@ class ClientDetailView extends StatelessWidget {
                     text: "Observaciones: ",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  TextSpan(
-                    text:
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...",
-                  ),
                 ],
+              ),
+            ),
+            const SizedBox(height: 8), 
+            Container(
+              width: double
+                  .infinity, 
+              height: 50, 
+              alignment: Alignment
+                  .center, 
+              child: const Text(
+                "Sin observaciones",
+                textAlign:
+                    TextAlign.center, 
+                style: TextStyle(fontSize: 12), 
               ),
             ),
             const SizedBox(height: 24),
@@ -86,7 +117,8 @@ class ClientDetailView extends StatelessWidget {
             const SizedBox(height: 8),
             // <-- Aquí envolvemos el ClientOrdersWidget en un SizedBox -->
             SizedBox(
-              height: 300, // Ajusta la altura según cuántas órdenes quieras mostrar
+              height:
+                  300, // Ajusta la altura según cuántas órdenes quieras mostrar
               child: ClientOrdersWidget(clientId: client.userId),
             ),
           ],
@@ -94,7 +126,6 @@ class ClientDetailView extends StatelessWidget {
       ),
     );
   }
-
 
   Widget _buildRow(String label, String value) {
     return Padding(

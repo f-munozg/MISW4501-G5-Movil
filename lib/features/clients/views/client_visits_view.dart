@@ -1,4 +1,5 @@
 import 'package:ccp_mobile/core/models/customer.dart';
+import 'package:ccp_mobile/features/clients/views/client_route_detail_view.dart';
 import 'package:ccp_mobile/features/clients/views/register_visit_view.dart';
 import 'package:flutter/material.dart';
 import 'package:ccp_mobile/core/widgets/custom_app_bar.dart';
@@ -31,13 +32,26 @@ class ClientVisitsView extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Row(
-                  children: [
-                    Icon(Icons.map),
-                    SizedBox(width: 8),
-                    Text("Ver Ruta",
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                  ],
+                GestureDetector(
+                  onTap: () {
+                    // Navegar a la vista de ruta (puedes personalizar esta parte)
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ClientRouteDetailView(),
+                      ),
+                    );
+                  },
+                  child: const Row(
+                    children: [
+                      Icon(Icons.map),
+                      SizedBox(width: 8),
+                      Text(
+                        "Ver Ruta",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
                 ),
                 OutlinedButton(
                   onPressed: () {

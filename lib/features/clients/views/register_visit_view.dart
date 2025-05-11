@@ -10,7 +10,7 @@ class RegisterVisitView extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       appBar: CustomAppBar(
-        title: "Registrar evento",
+        title: "Registrar visita",
         showBackButton: true,
       ),
       body: RegisterVisitForm(),

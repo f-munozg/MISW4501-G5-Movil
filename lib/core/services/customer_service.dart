@@ -70,6 +70,20 @@ class CustomerService {
     }
   }
 
+    ///Método para obtener todos los clientes por vendedor (customers)///
+  Future<List<Customer>?> getCustomersBySeller(String id) async {
+    final url = Uri.parse('${AppConfig.apiBackCustomers}/customers/seller/$id');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final List customers = data['customers'];
+      return customers.map((json) => Customer.fromJson(json)).toList();
+    } else {
+      throw Exception('Error al cargar clientes: ${response.statusCode}');
+    }
+  }
+
   ///Método para obtener los clientes por Id(customers)///
   Future<CustomerWithStore> getCustomerById(String id) async {
     final url = Uri.parse('${AppConfig.apiBackCustomers}/customers/$id');

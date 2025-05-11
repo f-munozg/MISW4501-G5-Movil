@@ -40,6 +40,9 @@ dependencies:
   get_storage: ^2.0.3
   intl: ^0.17.0
   image_picker: ^1.0.0
+  google_maps_flutter: ^2.1.1
+  geolocator: ^9.0.2
+  google_maps_webservice: ^0.0.20-nullsafety.5
 
 dev_dependencies:
   flutter_test:
