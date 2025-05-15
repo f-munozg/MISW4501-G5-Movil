@@ -96,7 +96,7 @@ class _OrderConfirmationViewState extends State<OrderConfirmationView> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: const [
-                      Text("Ítems: 253"),
+                      Text("Ítems: "),
                       SizedBox(width: 24),
                       Text(
                         "Ver Detalle",

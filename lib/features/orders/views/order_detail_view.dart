@@ -110,7 +110,7 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text("Ítems: 253"),
+                            Text("Ítems: "),
                             SizedBox(width: 24),
                             GestureDetector(
                               onTap: () {
