@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:ccp_mobile/core/models/customer.dart';
 import 'package:ccp_mobile/features/clients/views/client_detail_view.dart';
 import 'package:ccp_mobile/core/services/customer_service.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import '../../../core/widgets/custom_app_bar.dart';
 
 class ClientView extends StatefulWidget {
@@ -17,7 +20,10 @@ class _ClientViewState extends State<ClientView> {
   @override
   void initState() {
     super.initState();
-    _clientsFuture = CustomerService().getCustomers();
+      final box = GetStorage();
+      final userData = jsonDecode(box.read('user_data') ?? '{}');
+      final sellerId =  userData['seller_id'] ?? '';
+    _clientsFuture = CustomerService().getCustomersBySeller(sellerId);
   }
 
   @override

@@ -1,37 +1,41 @@
-import 'package:ccp_mobile/core/models/customer.dart';
 import 'package:ccp_mobile/features/clients/widgets/register_visit_form.dart';
+import 'package:ccp_mobile/core/models/customer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('Formulario de Registrar Visita funciona correctamente', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: RegisterVisitForm(client: Customer(
-            id: '1',
-            name: 'Cliente de Prueba',
-            identificationNumber: '123456789',
-            assignedSeller: 'Vendedor Asignado',
-            observations: 'Sin observaciones',
-            userId: 'user123',
-          )),
+  group('RegisterVisitForm Widget Tests', () {
+    testWidgets('debería renderizar campo de observaciones y botón',
+        (WidgetTester tester) async {
+      final customer = Customer(
+        id: '1',
+        name: 'Cliente Test',
+        identificationNumber: '12345',
+        assignedSeller: 'Vendedor Test',
+        observations: 'Sin observaciones',
+        userId: '42',
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: RegisterVisitForm(client: customer),
         ),
-      ),
-    );
+      );
 
-    // Verifica que todos los campos estén presentes
-    expect(find.byKey(const Key('nameField')), findsOneWidget);
-    expect(find.byKey(const Key('startDateField')), findsOneWidget);
-    expect(find.byKey(const Key('endDateField')), findsOneWidget);
-    expect(find.byKey(const Key('locationBox')), findsOneWidget);
-    expect(find.byKey(const Key('submitButton')), findsOneWidget);
+      // Verifica que se renderizan los campos
+      expect(find.byKey(const Key('observacionesField')), findsOneWidget);
+      expect(find.byKey(const Key('registerVisitButton')), findsOneWidget);
 
-    // Ingresa un nombre
-    await tester.enterText(find.byKey(const Key('nameField')), 'Visita Técnica');
+      // Simula escritura de observación
+      await tester.enterText(
+          find.byKey(const Key('observacionesField')), 'Visita exitosa');
+      expect(find.text('Visita exitosa'), findsOneWidget);
 
-    // Simula tap en botón de registrar
-    await tester.tap(find.byKey(const Key('submitButton')));
-    await tester.pump();
+      // Tap en botón (sin mock de servicio no hará nada útil, pero lo detecta)
+      await tester.tap(find.byKey(const Key('registerVisitButton')));
+      await tester.pump(); // Para procesar el tap
+
+      // Aquí puedes validar comportamiento posterior si mockeas el servicio
+    });
   });
 }

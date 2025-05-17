@@ -32,8 +32,8 @@ class _PqrsViewState extends State<PqrsView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(
-        title: "Pedidos",
-        showBackButton: false,
+        title: "PQRS",
+        showBackButton: true,
       ),
       body: FutureBuilder<List<Pqrs>?>(
         future: _pqrsFuture,
@@ -43,7 +43,7 @@ class _PqrsViewState extends State<PqrsView> {
           } else if (snapshot.hasError) {
             return Center(child: Text("Error: ${snapshot.error}"));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text("No hay órdenes realizadas"));
+            return const Center(child: Text("No hay prqrs realizadas por el cliente"));
           }
 
           final pqrsList = snapshot.data!;

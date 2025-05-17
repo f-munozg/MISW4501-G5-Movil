@@ -1,10 +1,11 @@
 import 'package:ccp_mobile/core/models/customer.dart';
+import 'package:ccp_mobile/core/services/customer_service.dart';
 import 'package:flutter/material.dart';
 
 class RegisterVisitForm extends StatefulWidget {
   final Customer client;
-
-  const RegisterVisitForm({super.key, required this.client});
+  final CustomerService customerService = CustomerService();
+  RegisterVisitForm({super.key, required this.client});
 
   @override
   State<RegisterVisitForm> createState() => _RegisterVisitFormState();
@@ -12,14 +13,20 @@ class RegisterVisitForm extends StatefulWidget {
 
 class _RegisterVisitFormState extends State<RegisterVisitForm> {
   bool visitaRealizada = true;
-  bool tipoOrdenP= true;
+  bool tipoOrdenP = true;
   final TextEditingController observacionesController = TextEditingController();
+
+  @override
+  void dispose() {
+    observacionesController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,8 +36,7 @@ class _RegisterVisitFormState extends State<RegisterVisitForm> {
               _infoRow("Dirección:", "Calle 50 Carrera 100"),
               _infoRow("CC:", widget.client.identificationNumber ?? "N/A"),
               const SizedBox(height: 20),
-              const Text("Visita:",
-                  style: TextStyle(fontWeight: FontWeight.w600)),
+              const Text("Visita:", style: TextStyle(fontWeight: FontWeight.w600)),
               _toggleOption("Realizada", visitaRealizada, () {
                 setState(() {
                   visitaRealizada = true;
@@ -42,8 +48,7 @@ class _RegisterVisitFormState extends State<RegisterVisitForm> {
                 });
               }),
               const SizedBox(height: 12),
-              const Text("Tipo Orden:",
-                  style: TextStyle(fontWeight: FontWeight.w600)),
+              const Text("Tipo Orden:", style: TextStyle(fontWeight: FontWeight.w600)),
               _toggleOption("Pedido", tipoOrdenP, () {
                 setState(() {
                   tipoOrdenP = true;
@@ -55,10 +60,10 @@ class _RegisterVisitFormState extends State<RegisterVisitForm> {
                 });
               }),
               const SizedBox(height: 20),
-              const Text("Observaciones",
-                  style: TextStyle(fontWeight: FontWeight.w600)),
+              const Text("Observaciones", style: TextStyle(fontWeight: FontWeight.w600)),
               const SizedBox(height: 8),
               TextField(
+                key: const Key('observacionesField'),
                 controller: observacionesController,
                 maxLines: 4,
                 decoration: InputDecoration(
@@ -79,11 +84,50 @@ class _RegisterVisitFormState extends State<RegisterVisitForm> {
                   ),
                 ),
               ),
-              const Spacer(),
+              const SizedBox(height: 32),
               Center(
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Aquí se puede manejar el envío
+                  key: const Key('registerVisitButton'),
+                  onPressed: () async {
+                    final customerId = widget.client.id;
+                    final observations = observacionesController.text.trim();
+
+                    if (observations.isEmpty) {
+                      if (!mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Por favor ingrese una observación')),
+                      );
+                      return;
+                    }
+
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (_) => const Center(child: CircularProgressIndicator()),
+                    );
+
+                    final success = await widget.customerService.registerVisit(
+                      customerId,
+                      observations,
+                      visitaRealizada,
+                      tipoOrdenP,
+                    );
+
+
+                    if (!mounted) return;
+
+                    Navigator.of(context).pop(); 
+
+                    if (success) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Visita registrada exitosamente')),
+                      );
+                      Navigator.of(context).pop();
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Error al registrar la visita')),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: const Color(0xFF00695C),
@@ -92,8 +136,7 @@ class _RegisterVisitFormState extends State<RegisterVisitForm> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 32, vertical: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                     elevation: 0,
                   ),
                   child: const Text(
@@ -114,9 +157,7 @@ class _RegisterVisitFormState extends State<RegisterVisitForm> {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          Expanded(
-              child: Text(label,
-                  style: const TextStyle(fontWeight: FontWeight.w500))),
+          Expanded(child: Text(label, style: const TextStyle(fontWeight: FontWeight.w500))),
           Expanded(child: Text(value, textAlign: TextAlign.right)),
         ],
       ),

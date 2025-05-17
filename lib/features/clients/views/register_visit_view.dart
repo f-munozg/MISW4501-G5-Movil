@@ -10,6 +10,7 @@ class RegisterVisitView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("Cliente: ${client.id}");
     return Scaffold(
       appBar: const CustomAppBar(
         title: "Registrar visita",

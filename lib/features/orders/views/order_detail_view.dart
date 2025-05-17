@@ -25,13 +25,15 @@ class OrderDetailView extends StatefulWidget {
 class _OrderDetailViewState extends State<OrderDetailView> {
   final orderService = OrderService();
   Order? order;
+  List<dynamic>? orderDetail;
   bool isLoading = true;
-  File? selectedImage; // <-- Para almacenar la imagen seleccionada
-
+  File? selectedImage;
+  
   @override
   void initState() {
     super.initState();
     _loadOrder();
+    _loadOrderDetail();
   }
 
   Future<void> _loadOrder() async {
@@ -41,6 +43,25 @@ class _OrderDetailViewState extends State<OrderDetailView> {
         order = fetchedOrder;
         isLoading = false;
       });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al cargar pedido: $e')),
+      );
+    }
+  }
+
+  Future<void> _loadOrderDetail() async {
+    try {
+      final fetchedOrderDetail =
+          await orderService.getOrdersDetailById(widget.orderId);
+      setState(() {
+        orderDetail = fetchedOrderDetail;
+        isLoading = false;
+      });
+      print("Order Detail: $orderDetail");
     } catch (e) {
       setState(() {
         isLoading = false;
@@ -114,11 +135,14 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                             SizedBox(width: 24),
                             GestureDetector(
                               onTap: () {
-                                Navigator.push(context,
+                                Navigator.push(
+                                    context,
                                     MaterialPageRoute(
                                         builder: (context) =>
                                             OrderDetailProductView(
-                                                orderId: order!.id)));
+                                              cartItems: orderDetail ?? [],
+                                              canCreatePqrs: true,
+                                            )));
                               },
                               child: Row(
                                 children: [

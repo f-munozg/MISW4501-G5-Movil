@@ -14,6 +14,7 @@ class ClientDetailView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("Client: ${client.id}");
     return Scaffold(
       appBar: const CustomAppBar(
         title: "Cliente",
@@ -115,7 +116,6 @@ class ClientDetailView extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            // <-- Aquí envolvemos el ClientOrdersWidget en un SizedBox -->
             SizedBox(
               height:
                   300, // Ajusta la altura según cuántas órdenes quieras mostrar
