@@ -16,7 +16,6 @@ class PqrsDetailView extends StatefulWidget {
 class _PqrsDetailViewState extends State<PqrsDetailView> {
   bool _loading = false;
 
-
   void _handleResponse() async {
     setState(() => _loading = true);
     try {
@@ -72,7 +71,7 @@ class _PqrsDetailViewState extends State<PqrsDetailView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 25),
                   Center(
                     child: Text(
                       'PQR',
@@ -82,13 +81,12 @@ class _PqrsDetailViewState extends State<PqrsDetailView> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 15),
                   Center(
                     child: Text(
                       pqrs.id,
                       style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
+                        fontSize: 14,
                       ),
                     ),
                   ),
@@ -102,13 +100,20 @@ class _PqrsDetailViewState extends State<PqrsDetailView> {
                   const SizedBox(height: 8),
                   Center(
                     child: Text(
-                      'Título: ${pqrs.title}',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      'Monto reembolso: ${pqrs.amount}',
+                      style: const TextStyle(fontSize: 14),
                     ),
                   ),
+                  const SizedBox(height: 30),
+                  Text(
+                    'Título:',
+                    textAlign: TextAlign.justify,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(pqrs.title, textAlign: TextAlign.justify),
                   const SizedBox(height: 18),
                   const Text(
                     'Observaciones:',
@@ -117,37 +122,38 @@ class _PqrsDetailViewState extends State<PqrsDetailView> {
                   const SizedBox(height: 6),
                   Text(pqrs.description, textAlign: TextAlign.justify),
                   const SizedBox(height: 32),
-                  if(widget.isClient == false && widget.pqrs.status != 'cerrado')
-                  Center(
-                    child: ElevatedButton(
-                      onPressed: _loading ? null : _handleResponse,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF00946E),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 32, vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                  if (widget.isClient == false &&
+                      widget.pqrs.status != 'cerrado')
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: _loading ? null : _handleResponse,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF00946E),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 32, vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
+                        child: _loading
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : const Text(
+                                'Responder',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
                       ),
-                      child: _loading
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2,
-                              ),
-                            )
-                          : const Text(
-                              'Responder',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
                     ),
-                  ),
                 ],
               ),
             ),

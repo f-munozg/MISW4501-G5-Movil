@@ -9,6 +9,7 @@ class Pqrs {
   final String type;
   final String description;
   final DateTime updatedAt;
+  final double? amount;
 
   Pqrs({
     this.orderId,
@@ -21,6 +22,7 @@ class Pqrs {
     required this.type,
     required this.description,
     required this.updatedAt,
+    this.amount,
   });
 
   factory Pqrs.fromJson(Map<String, dynamic> json) {
@@ -35,6 +37,7 @@ class Pqrs {
       type: json['type'],
       description: json['description'],
       updatedAt: DateTime.parse(json['updated_at']),
+      amount: json['amount'] != null ? double.parse(json['amount'].toString()) : null,
     );
   }
 
@@ -50,6 +53,7 @@ class Pqrs {
       'type': type,
       'description': description,
       'updated_at': updatedAt.toIso8601String(),
+      'amount': amount,
     };
   }
 }

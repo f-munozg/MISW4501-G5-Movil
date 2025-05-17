@@ -124,4 +124,30 @@ class OrderService {
           'Error al obtener detalle del pedido: ${response.statusCode}');
     }
   }
+
+  Future<bool> createEvent({
+    required String name,
+    required String startDate,
+    required String endDate,
+    required String location,
+  }) async {
+    final url = Uri.parse('${AppConfig.apiBackSellers}/sellers/log_event');
+
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'name': name,
+        'start_date': startDate,
+        'end_date': endDate,
+        'location': location,
+      }),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

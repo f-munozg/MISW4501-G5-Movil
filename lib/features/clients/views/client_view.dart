@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:ccp_mobile/core/models/customer.dart';
 import 'package:ccp_mobile/features/clients/views/client_detail_view.dart';
 import 'package:ccp_mobile/core/services/customer_service.dart';
+import 'package:ccp_mobile/features/products/views/create_event_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import '../../../core/widgets/custom_app_bar.dart';
@@ -20,18 +21,32 @@ class _ClientViewState extends State<ClientView> {
   @override
   void initState() {
     super.initState();
-      final box = GetStorage();
-      final userData = jsonDecode(box.read('user_data') ?? '{}');
-      final sellerId =  userData['seller_id'] ?? '';
+    final box = GetStorage();
+    final userData = jsonDecode(box.read('user_data') ?? '{}');
+    final sellerId = userData['seller_id'] ?? '';
     _clientsFuture = CustomerService().getCustomersBySeller(sellerId);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
+      appBar: CustomAppBar(
         title: "Clientes",
         showBackButton: false,
+        actionButton: IconButton(
+          icon: Icon(
+            Icons.add_circle,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => const RegisterEventForm(),
+              ),
+            );
+          },
+        ),
       ),
       body: FutureBuilder<List<Customer>?>(
         future: _clientsFuture,
@@ -51,7 +66,10 @@ class _ClientViewState extends State<ClientView> {
             itemBuilder: (context, index) {
               final client = clients[index];
               return ListTile(
-                leading: CircleAvatar(child: Text(client.name?.isNotEmpty == true ? client.name![0] : '?')),
+                leading: CircleAvatar(
+                    child: Text(client.name?.isNotEmpty == true
+                        ? client.name![0]
+                        : '?')),
                 title: Text(client.name ?? 'Nombre no disponible'),
                 trailing: const Icon(Icons.arrow_forward_ios),
                 onTap: () {

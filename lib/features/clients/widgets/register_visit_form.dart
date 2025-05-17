@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:ccp_mobile/core/models/customer.dart';
 import 'package:ccp_mobile/core/services/customer_service.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class RegisterVisitForm extends StatefulWidget {
   final Customer client;
@@ -14,6 +17,9 @@ class RegisterVisitForm extends StatefulWidget {
 class _RegisterVisitFormState extends State<RegisterVisitForm> {
   bool visitaRealizada = true;
   bool tipoOrdenP = true;
+  File? videoMock;
+  String? videoName;
+
   final TextEditingController observacionesController = TextEditingController();
 
   @override
@@ -36,7 +42,8 @@ class _RegisterVisitFormState extends State<RegisterVisitForm> {
               _infoRow("Dirección:", "Calle 50 Carrera 100"),
               _infoRow("CC:", widget.client.identificationNumber ?? "N/A"),
               const SizedBox(height: 20),
-              const Text("Visita:", style: TextStyle(fontWeight: FontWeight.w600)),
+              const Text("Visita:",
+                  style: TextStyle(fontWeight: FontWeight.w600)),
               _toggleOption("Realizada", visitaRealizada, () {
                 setState(() {
                   visitaRealizada = true;
@@ -48,7 +55,8 @@ class _RegisterVisitFormState extends State<RegisterVisitForm> {
                 });
               }),
               const SizedBox(height: 12),
-              const Text("Tipo Orden:", style: TextStyle(fontWeight: FontWeight.w600)),
+              const Text("Tipo Orden:",
+                  style: TextStyle(fontWeight: FontWeight.w600)),
               _toggleOption("Pedido", tipoOrdenP, () {
                 setState(() {
                   tipoOrdenP = true;
@@ -60,7 +68,8 @@ class _RegisterVisitFormState extends State<RegisterVisitForm> {
                 });
               }),
               const SizedBox(height: 20),
-              const Text("Observaciones", style: TextStyle(fontWeight: FontWeight.w600)),
+              const Text("Observaciones",
+                  style: TextStyle(fontWeight: FontWeight.w600)),
               const SizedBox(height: 8),
               TextField(
                 key: const Key('observacionesField'),
@@ -84,6 +93,58 @@ class _RegisterVisitFormState extends State<RegisterVisitForm> {
                   ),
                 ),
               ),
+              const SizedBox(height: 20),
+              Center(
+                child: ElevatedButton.icon(
+                  key: const Key('pickVideoButton'),
+                  onPressed: () async {
+                    final picker = ImagePicker();
+                    final pickedFile =
+                        await picker.pickVideo(source: ImageSource.gallery);
+
+                    if (pickedFile != null) {
+                      setState(() {
+                        videoMock = File(pickedFile.path);
+                        videoName =
+                            pickedFile.name;
+                      });
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content:
+                                Text('Video seleccionado: ${pickedFile.name}')),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('No se seleccionó ningún video')),
+                      );
+                    }
+                  },
+                  icon: const Icon(Icons.video_library, color: Colors.white),
+                  label: const Text("Seleccionar Video"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.indigoAccent,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 14),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                  ),
+                ),
+              ),
+              if (videoName != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: Center(
+                    child: Text(
+                      "🎬 Video seleccionado: $videoName",
+                      style: const TextStyle(
+                          color: Colors.green, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
               const SizedBox(height: 32),
               Center(
                 child: ElevatedButton(
@@ -95,7 +156,8 @@ class _RegisterVisitFormState extends State<RegisterVisitForm> {
                     if (observations.isEmpty) {
                       if (!mounted) return;
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Por favor ingrese una observación')),
+                        const SnackBar(
+                            content: Text('Por favor ingrese una observación')),
                       );
                       return;
                     }
@@ -103,7 +165,8 @@ class _RegisterVisitFormState extends State<RegisterVisitForm> {
                     showDialog(
                       context: context,
                       barrierDismissible: false,
-                      builder: (_) => const Center(child: CircularProgressIndicator()),
+                      builder: (_) =>
+                          const Center(child: CircularProgressIndicator()),
                     );
 
                     final success = await widget.customerService.registerVisit(
@@ -113,19 +176,20 @@ class _RegisterVisitFormState extends State<RegisterVisitForm> {
                       tipoOrdenP,
                     );
 
-
                     if (!mounted) return;
 
-                    Navigator.of(context).pop(); 
+                    Navigator.of(context).pop();
 
                     if (success) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Visita registrada exitosamente')),
+                        const SnackBar(
+                            content: Text('Visita registrada exitosamente')),
                       );
                       Navigator.of(context).pop();
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Error al registrar la visita')),
+                        const SnackBar(
+                            content: Text('Error al registrar la visita')),
                       );
                     }
                   },
@@ -136,7 +200,8 @@ class _RegisterVisitFormState extends State<RegisterVisitForm> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 32, vertical: 16),
                     elevation: 0,
                   ),
                   child: const Text(
@@ -157,7 +222,9 @@ class _RegisterVisitFormState extends State<RegisterVisitForm> {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
-          Expanded(child: Text(label, style: const TextStyle(fontWeight: FontWeight.w500))),
+          Expanded(
+              child: Text(label,
+                  style: const TextStyle(fontWeight: FontWeight.w500))),
           Expanded(child: Text(value, textAlign: TextAlign.right)),
         ],
       ),
