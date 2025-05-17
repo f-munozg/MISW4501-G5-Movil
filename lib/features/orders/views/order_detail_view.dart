@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 
 class OrderDetailView extends StatefulWidget {
-  final String orderId; // <-- Recibe ID de la orden
+  final String orderId;
 
   const OrderDetailView({super.key, required this.orderId});
 
@@ -142,6 +142,8 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                                             OrderDetailProductView(
                                               cartItems: orderDetail ?? [],
                                               canCreatePqrs: true,
+                                              orderId: order!.id,
+                                              customerId: order!.customerId,
                                             )));
                               },
                               child: Row(

@@ -1,47 +1,56 @@
 class Pqrs {
-  final String identificationNumber;
-  final String name;
-  final String address;
-  final List<String> countries;
-  final String identificationNumberContact;
-  final String nameContact;
-  final String phoneContact;
-  final String addressContact;
+  final String? sellerId;
+  final String? orderId;
+  final String id;
+  final String title;
+  final String status;
+  final String customerId;
+  final DateTime createdAt;
+  final String type;
+  final String description;
+  final DateTime updatedAt;
 
   Pqrs({
-    required this.identificationNumber,
-    required this.name,
-    required this.address,
-    required this.countries,
-    required this.identificationNumberContact,
-    required this.nameContact,
-    required this.phoneContact,
-    required this.addressContact,
+    this.orderId,
+    required this.sellerId,
+    required this.id,
+    required this.title,
+    required this.status,
+    required this.customerId,
+    required this.createdAt,
+    required this.type,
+    required this.description,
+    required this.updatedAt,
   });
 
   factory Pqrs.fromJson(Map<String, dynamic> json) {
     return Pqrs(
-      identificationNumber: json['identification_number'],
-      name: json['name'],
-      address: json['address'],
-      countries: List<String>.from(json['countries']),
-      identificationNumberContact: json['identification_number_contact'],
-      nameContact: json['name_contact'],
-      phoneContact: json['phone_contact'],
-      addressContact: json['address_contact'],
+      orderId: json['order_id'],
+      sellerId: json['seller_id'],
+      id: json['id'],
+      title: json['title'],
+      status: json['status'],
+      customerId: json['customer_id'],
+      createdAt: DateTime.parse(json['created_at']),
+      type: json['type'],
+      description: json['description'],
+      updatedAt: DateTime.parse(json['updated_at']),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'identification_number': identificationNumber,
-      'name': name,
-      'address': address,
-      'countries': countries,
-      'identification_number_contact': identificationNumberContact,
-      'name_contact': nameContact,
-      'phone_contact': phoneContact,
-      'address_contact': addressContact,
+      'order_id': orderId,
+      'seller_id': sellerId,
+      'id': id,
+      'title': title,
+      'status': status,
+      'customer_id': customerId,
+      'created_at': createdAt.toIso8601String(),
+      'type': type,
+      'description': description,
+      'updated_at': updatedAt.toIso8601String(),
     };
   }
 }
+

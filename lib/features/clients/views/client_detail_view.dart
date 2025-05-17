@@ -55,7 +55,7 @@ class ClientDetailView extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => PqrsView(client: client),
+                      builder: (_) => PqrsView(client: client, isClient: false,),
                     ),
                   );
                 }),

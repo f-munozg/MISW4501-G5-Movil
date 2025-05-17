@@ -1,13 +1,15 @@
 import 'package:ccp_mobile/core/models/customer.dart';
 import 'package:ccp_mobile/core/models/pqrs.dart';
 import 'package:ccp_mobile/core/services/pqrs_service.dart';
+import 'package:ccp_mobile/core/utils/formatters.dart';
 import 'package:ccp_mobile/features/pqrs/views/pqrs_detail_view.dart';
 import 'package:flutter/material.dart';
 import '../../../core/widgets/custom_app_bar.dart';
 
 class PqrsView extends StatefulWidget {
-  const PqrsView({super.key, required this.client});
+  const PqrsView({super.key, required this.client, required this.isClient});
   final Customer client;
+  final bool isClient;
 
   @override
   State<PqrsView> createState() => _PqrsViewState();
@@ -28,7 +30,7 @@ class _PqrsViewState extends State<PqrsView> {
     });
   }
 
-@override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(
@@ -43,7 +45,8 @@ class _PqrsViewState extends State<PqrsView> {
           } else if (snapshot.hasError) {
             return Center(child: Text("Error: ${snapshot.error}"));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text("No hay prqrs realizadas por el cliente"));
+            return const Center(
+                child: Text("No hay prqrs realizadas por el cliente"));
           }
 
           final pqrsList = snapshot.data!;
@@ -53,14 +56,20 @@ class _PqrsViewState extends State<PqrsView> {
             itemBuilder: (context, index) {
               final pqrs = pqrsList[index];
               return ListTile(
-                //title: Text("Pedido ${formatDateTime(pqrs.createdAt)}"),
-                //subtitle: Text("Estado: ${parseStatus(pqrs.status)}"),
+                title: Text(pqrs.title, style: TextStyle(fontWeight: FontWeight.bold)),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Estado: ${parseStatus(pqrs.status)}"),
+                    Text("Fecha: ${formatDateTime(pqrs.createdAt)}"), // Aquí va tu "sub-subtítulo"
+                  ],
+                ),
                 trailing: const Icon(Icons.arrow_forward_ios),
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => PqrsDetailView(pqrs: pqrs),
+                      builder: (_) => PqrsDetailView(pqrs: pqrs, isClient: widget.isClient,),
                     ),
                   );
                 },
@@ -72,6 +81,3 @@ class _PqrsViewState extends State<PqrsView> {
     );
   }
 }
-
-
-

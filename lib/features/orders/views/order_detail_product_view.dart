@@ -5,11 +5,15 @@ import 'package:flutter/material.dart';
 class OrderDetailProductView extends StatefulWidget {
   final List<dynamic> cartItems;
   final bool canCreatePqrs;
+  final String orderId;
+  final String customerId;
 
   const OrderDetailProductView({
     super.key,
     required this.cartItems,
     required this.canCreatePqrs,
+    required this.orderId,
+    required this.customerId,
   });
 
   @override
@@ -39,7 +43,7 @@ class _OrderDetailProductViewState extends State<OrderDetailProductView> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => PqrsCreateView()),
+                    MaterialPageRoute(builder: (context) => PqrsCreateView(orderId: widget.orderId,customerId: widget.customerId,)),
                   );
                 },
                 style: OutlinedButton.styleFrom(

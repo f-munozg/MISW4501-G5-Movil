@@ -40,7 +40,7 @@ class _OrderConfirmationViewState extends State<OrderConfirmationView> {
       setState(() {
         order = fetchedOrder;
         isLoading = false;
-      });  
+      });
     } catch (e) {
       setState(() {
         isLoading = false;
@@ -51,9 +51,10 @@ class _OrderConfirmationViewState extends State<OrderConfirmationView> {
     }
   }
 
-    Future<void> _loadOrderDetail() async {
+  Future<void> _loadOrderDetail() async {
     try {
-      final fetchedOrderDetail = await orderService.getOrdersDetailById(widget.orderId);
+      final fetchedOrderDetail =
+          await orderService.getOrdersDetailById(widget.orderId);
       setState(() {
         orderDetail = fetchedOrderDetail;
         isLoading = false;
@@ -126,7 +127,10 @@ class _OrderConfirmationViewState extends State<OrderConfirmationView> {
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               OrderDetailProductView(
-                                                  cartItems: orderDetail ?? [], canCreatePqrs: false,)));
+                                                  cartItems: orderDetail ?? [],
+                                                  canCreatePqrs: false,
+                                                  orderId: order!.id,
+                                                  customerId:order!.customerId)));
                                 },
                                 child: Row(
                                   children: [
