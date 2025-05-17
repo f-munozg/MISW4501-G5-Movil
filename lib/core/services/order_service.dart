@@ -70,8 +70,6 @@ class OrderService {
     final response = await http.post(url,
         headers: {'Content-Type': 'application/json'}, body: body);
 
-    print('Response: ${response.body}');
-    print('Status Code: ${response.statusCode}');
     if (response.statusCode == 200 || response.statusCode == 201) {
       final orderId = jsonDecode(response.body)['id'];
       return orderId;
@@ -109,6 +107,21 @@ class OrderService {
       return Order.fromJson(data['order']);
     } else {
       throw Exception('Error la órden: ${response.statusCode}');
+    }
+  }
+
+  /// Método para obtener detalle de un pedido por ID ///
+  Future<List<dynamic>> getOrdersDetailById(String id) async {
+    final url = Uri.parse('${AppConfig.apiBackOrders}/orders/$id/detail');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final data = jsonDecode(response.body);
+      final dataList = data['products'] as List<dynamic>;
+      return dataList; // Devuelves el JSON crudo sin mapear ni castear nada
+    } else {
+      throw Exception(
+          'Error al obtener detalle del pedido: ${response.statusCode}');
     }
   }
 }

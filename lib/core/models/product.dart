@@ -3,7 +3,7 @@ class Product {
   final String product;
   final String sku;
   final double unitValue;
-  final String photo; // base64
+  final String photo;
   final String category;
   final int quantity;
   final DateTime estimatedDeliveryTime;

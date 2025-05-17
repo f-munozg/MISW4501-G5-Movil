@@ -17,6 +17,7 @@ class LoginService {
     
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = jsonDecode(response.body);
+      print(data);
       final box = GetStorage();
       await box.write('user_data', jsonEncode(data));
       return data['role'];
