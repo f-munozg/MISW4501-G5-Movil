@@ -7,23 +7,34 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('Login correcto redirige al HomeScreen', (WidgetTester tester) async {
-    // Inicia la app completa
     app.main();
     await tester.pumpAndSettle();
 
-    // Ingresa texto en los campos
-    final emailField = find.byKey(const Key('loginEmailField'));
-    final passwordField = find.byKey(const Key('loginPasswordField'));
-    final loginButton = find.byKey(const Key('loginButton'));
+    await tester.tap(find.text('¿Eres tendero? Regístrate aquí'));
 
-    await tester.enterText(emailField, 'felipegonzalez');
-    await tester.enterText(passwordField, '123456789');
-    await tester.tap(loginButton);
-
-    // Espera a que termine la animación y las peticiones
     await tester.pumpAndSettle();
 
-    // Verifica si estamos en la pantalla de Home (puedes usar un texto, un key o cualquier widget único)
-    expect(find.text('Pedidos'), findsOneWidget);
+    final emailField = find.byKey(const Key('loginEmailField'));
+    final passwordField = find.byKey(const Key('loginPasswordField'));
+    final confirmPasswordField = find.byKey(const Key('loginConfirmPasswordField'));
+    final registerButton = find.byKey(const Key('loginButton'));
+
+    expect(emailField, findsOneWidget);
+    expect(passwordField, findsOneWidget);
+    expect(confirmPasswordField, findsOneWidget);
+    expect(registerButton, findsOneWidget);
+    
+    await tester.enterText(emailField, 'usuario@test.com');
+    await tester.enterText(passwordField, 'password123');
+    await tester.enterText(confirmPasswordField, 'password123');
+
+    await tester.pumpAndSettle();
+
+    
+    await tester.tap(registerButton);
+    await tester.pumpAndSettle();
+
+    
+    expect(find.text('Registro exitoso'), findsOneWidget);
   });
 }

@@ -145,7 +145,7 @@ class _RegisterVisitFormState extends State<RegisterVisitForm> {
                     ),
                   ),
                 ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 20),
               Center(
                 child: ElevatedButton(
                   key: const Key('registerVisitButton'),
