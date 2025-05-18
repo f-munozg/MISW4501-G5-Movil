@@ -61,7 +61,7 @@ class _ClientRecomendationsViewState extends State<ClientRecomendationsView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(
-        title: "Detalle de pedido",
+        title: "Recomendaciones",
         showBackButton: true,
       ),
       body: isLoading

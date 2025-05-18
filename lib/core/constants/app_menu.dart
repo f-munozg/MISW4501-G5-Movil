@@ -17,10 +17,10 @@ class AppMenu {
   ];
 
   static final List<BottomNavItem> sellerMenu = [
+    BottomNavItem(icon: Icons.person, label: 'Clientes', screen: ClientView()),
     BottomNavItem(icon: Icons.tour, label: 'Pedidos', screen: const OrderView()),
     BottomNavItem(icon: Icons.inventory, label: 'Productos', screen:  ProductView()),
     //BottomNavItem(icon: Icons.storefront, label: 'Tiendas', screen: const StoreView()),
-    BottomNavItem(icon: Icons.person, label: 'Clientes', screen: ClientView()),
     BottomNavItem(icon: Icons.settings, label: 'Configuración', screen: const SettingsView(userRole: AppRoles.seller)),
   ];
 }

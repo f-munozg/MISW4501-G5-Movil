@@ -21,7 +21,7 @@ class _PqrsDetailViewState extends State<PqrsDetailView> {
     try {
       final success = await PqrsService().updatePqrs(
         pqrsId: widget.pqrs.id,
-        status: "resuelta",
+        status: "cerrado",
         orderId: widget.pqrs.orderId ?? '',
       );
 
@@ -30,7 +30,7 @@ class _PqrsDetailViewState extends State<PqrsDetailView> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(
           success == true
-              ? 'PQRS actualizada como resuelta.'
+              ? 'PQRS actualizado correctamente.'
               : 'Acceso no autorizado.',
         ),
         backgroundColor: success == true ? Colors.green : Colors.orange,
@@ -100,7 +100,7 @@ class _PqrsDetailViewState extends State<PqrsDetailView> {
                   const SizedBox(height: 8),
                   Center(
                     child: Text(
-                      'Monto reembolso: ${pqrs.amount}',
+                      'Monto reembolso: \$ ${pqrs.amount}',
                       style: const TextStyle(fontSize: 14),
                     ),
                   ),

@@ -58,6 +58,9 @@ class PqrsService {
   required String orderId,
 }) async {
   final url = Uri.parse('${AppConfig.apiBackOrders}/orders/pqrs/updatePQRS/$pqrsId');
+  print('pqrsId: $pqrsId');
+  print('status: $status');
+  print('orderId: $orderId');
   final response = await http.put(
     url,
     headers: {'Content-Type': 'application/json'},
