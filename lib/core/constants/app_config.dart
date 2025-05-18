@@ -1,5 +1,7 @@
 class AppConfig {
   static const String apiBackUser = 'https://backend-users-143596276526.us-central1.run.app';
+  static const String apiBackSellers = 'https://backend-sellers-143596276526.us-central1.run.app';
+  static const String apiBackRoutes = 'https://backend-routes-143596276526.us-central1.run.app';
   static const String apiBackCustomers = 'https://backend-customers-143596276526.us-central1.run.app';
   static const String apiBackStock = 'https://backend-stock-143596276526.us-central1.run.app';
   static const String apiBackOrders = 'https://backend-orders-143596276526.us-central1.run.app';

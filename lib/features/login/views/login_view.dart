@@ -69,11 +69,8 @@ class _LoginViewState extends State<LoginView> {
         children: [
           _buildLoginForm(),
           if (_isLoading)
-            Container(
-              color: Colors.black.withOpacity(0.5),
-              child: const Center(
-                child: CircularProgressIndicator(),
-              ),
+            const Center(
+              child: CircularProgressIndicator(),
             ),
         ],
       ),
@@ -91,10 +88,13 @@ class _LoginViewState extends State<LoginView> {
           end: Alignment.bottomRight,
         ),
       ),
-      child: Column(
+      
+      child:
+       Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          const SizedBox(height: 100),
           Image.asset(
             'assets/images/LogoCCP.png',
             height: MediaQuery.of(context).size.width * 0.4,
@@ -111,13 +111,16 @@ class _LoginViewState extends State<LoginView> {
               ),
             ),
           ),
-          const SizedBox(height: 40),
-          LoginForm(
-            emailController: emailController,
-            passwordController: passwordController,
-            onSubmit: _handleLogin,
-          ),
           const SizedBox(height: 20),
+          Expanded(
+            child: SingleChildScrollView(
+              child: LoginForm(
+                emailController: emailController,
+                passwordController: passwordController,
+                onSubmit: _handleLogin,
+              ),
+            ),
+          ),
           GestureDetector(
             onTap: () {
               Navigator.push(
@@ -136,6 +139,7 @@ class _LoginViewState extends State<LoginView> {
               ),
             ),
           ),
+          const SizedBox(height: 50),
         ],
       ),
     );

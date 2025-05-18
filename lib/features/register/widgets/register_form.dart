@@ -49,7 +49,6 @@ class _RegisterFormState extends State<RegisterForm> {
         );
       }
 
-      // Navegar al LoginView después de la respuesta
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(

@@ -48,12 +48,11 @@ class ClientOrdersWidget extends StatelessWidget {
         contentPadding: const EdgeInsets.all(16),
         trailing: Text(parseStatus(order.status)),
         onTap: () {
-          Navigator.pushAndRemoveUntil(
+          Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => OrderConfirmationView(orderId: order.id),
             ),
-            (route) => false,
           );
         },
       ),

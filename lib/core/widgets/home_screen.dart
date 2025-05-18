@@ -26,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       body: menuItems[_selectedIndex]
-          .screen, // ← ¡Cada cambio de tab crea un nuevo widget!
+          .screen,
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: AppColors.primaryColor,
         unselectedItemColor: Colors.grey,
