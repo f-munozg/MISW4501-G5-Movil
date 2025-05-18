@@ -29,9 +29,8 @@ void main() {
           ),
         ),
       );
-
       // Assert: muestra el título del AppBar y el indicador de carga
-      expect(find.text('Detalle de pedido'), findsOneWidget);
+      expect(find.text('Recomendaciones'), findsOneWidget);
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
     });
 
