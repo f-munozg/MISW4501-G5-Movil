@@ -7,13 +7,14 @@ import 'package:ccp_mobile/core/services/order_service.dart';
 import 'package:ccp_mobile/core/utils/formatters.dart';
 import 'package:ccp_mobile/core/widgets/custom_app_bar.dart';
 import 'package:ccp_mobile/features/orders/views/order_confirmation_view.dart';
+import 'package:ccp_mobile/features/orders/views/order_detail_product_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 
 class OrderDetailView extends StatefulWidget {
-  final String orderId; // <-- Recibe ID de la orden
+  final String orderId;
 
   const OrderDetailView({super.key, required this.orderId});
 
@@ -24,13 +25,15 @@ class OrderDetailView extends StatefulWidget {
 class _OrderDetailViewState extends State<OrderDetailView> {
   final orderService = OrderService();
   Order? order;
+  List<dynamic>? orderDetail;
   bool isLoading = true;
-  File? selectedImage; // <-- Para almacenar la imagen seleccionada
-
+  File? selectedImage;
+  
   @override
   void initState() {
     super.initState();
     _loadOrder();
+    _loadOrderDetail();
   }
 
   Future<void> _loadOrder() async {
@@ -40,6 +43,25 @@ class _OrderDetailViewState extends State<OrderDetailView> {
         order = fetchedOrder;
         isLoading = false;
       });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al cargar pedido: $e')),
+      );
+    }
+  }
+
+  Future<void> _loadOrderDetail() async {
+    try {
+      final fetchedOrderDetail =
+          await orderService.getOrdersDetailById(widget.orderId);
+      setState(() {
+        orderDetail = fetchedOrderDetail;
+        isLoading = false;
+      });
+      print("Order Detail: $orderDetail");
     } catch (e) {
       setState(() {
         isLoading = false;
@@ -108,14 +130,33 @@ class _OrderDetailViewState extends State<OrderDetailView> {
                         const SizedBox(height: 24),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Text("Ítems: 253"),
+                          children: [
+                            Text("Ítems: "),
                             SizedBox(width: 24),
-                            Text(
-                              "Ver Detalle",
-                              style: TextStyle(
-                                decoration: TextDecoration.underline,
-                                color: Colors.black,
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            OrderDetailProductView(
+                                              cartItems: orderDetail ?? [],
+                                              canCreatePqrs: true,
+                                              orderId: order!.id,
+                                              customerId: order!.customerId,
+                                            )));
+                              },
+                              child: Row(
+                                children: [
+                                  const Text(
+                                    "Ver Detalle ",
+                                    style: TextStyle(
+                                      decoration: TextDecoration.underline,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  const Icon(Icons.open_in_new, size: 14),
+                                ],
                               ),
                             ),
                           ],

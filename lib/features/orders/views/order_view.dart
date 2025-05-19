@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:ccp_mobile/core/constants/app_formats.dart';
 import 'package:ccp_mobile/core/models/order.dart';
 import 'package:ccp_mobile/core/services/order_service.dart';
 import 'package:ccp_mobile/features/orders/views/order_detail_view.dart';
@@ -64,7 +65,12 @@ class _OrderViewState extends State<OrderView> {
             itemCount: orders.length,
             itemBuilder: (context, index) {
               final order = orders[index];
+              final isReservado = order.status == AppFormats.estadoReservado;
+
               return ListTile(
+                leading: isReservado
+                    ? const Icon(Icons.warning, color: Colors.redAccent)
+                    : null,
                 title: Text("Pedido ${formatDateTime(order.dateOrder)}"),
                 subtitle: Text("Estado: ${parseStatus(order.status)}"),
                 trailing: const Icon(Icons.arrow_forward_ios),

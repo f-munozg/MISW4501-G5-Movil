@@ -1,68 +1,153 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ccp_mobile/core/models/order.dart';
+import 'package:ccp_mobile/core/models/cart_item.dart';
+import 'package:ccp_mobile/core/models/product.dart';
 
 void main() {
-  // Test 1: Verificar que el constructor funciona correctamente
-  test('Order constructor works correctly', () {
-    final order = Order(
-      id: '1',
-      customerId: '123',
-      sellerId: '456',
-      dateOrder: DateTime(2025, 4, 27, 10, 30),
-      dateDelivery: DateTime(2025, 4, 28, 10, 30),
-      status: 'reserved',
-    );
+  final dateOrder = DateTime.parse('2025-05-10T09:00:00.000Z');
+  final dateDelivery = DateTime.parse('2025-05-12T15:00:00.000Z');
+  final dateUpdate = DateTime.parse('2025-05-09T12:00:00.000Z');
+  final estimatedDelivery = DateTime.parse('2025-05-11T00:00:00.000Z');
 
-    // Verificamos que todos los campos se hayan inicializado correctamente
-    expect(order.id, '1');
-    expect(order.customerId, '123');
-    expect(order.sellerId, '456');
-    expect(order.dateOrder, DateTime(2025, 4, 27, 10, 30));
-    expect(order.dateDelivery, DateTime(2025, 4, 28, 10, 30));
-    expect(order.status, 'reserved');
-  });
+  final product1 = Product(
+    id: 'P1',
+    product: 'Laptop',
+    sku: 'LP123',
+    unitValue: 1200.50,
+    photo: 'photo_url',
+    category: 'Electronics',
+    quantity: 10,
+    estimatedDeliveryTime: estimatedDelivery,
+    dateUpdate: dateUpdate,
+  );
 
-  // Test 2: Verificar que fromJson convierte correctamente el mapa en un objeto Order
-  test('Order.fromJson converts map to Order object', () {
-    final json = {
-      'id': '1',
-      'customer_id': '123',
-      'seller_id': '456',
-      'date_order': '2025-04-27T10:30:00.000',
-      'date_delivery': '2025-04-28T10:30:00.000',
-      'status': 'reserved',
-    };
+  final product2 = Product(
+    id: 'P2',
+    product: 'Mouse',
+    sku: 'MS456',
+    unitValue: 25.75,
+    photo: 'photo_url_2',
+    category: 'Accessories',
+    quantity: 30,
+    estimatedDeliveryTime: estimatedDelivery,
+    dateUpdate: dateUpdate,
+  );
 
-    final order = Order.fromJson(json);
+  final cartItems = [
+    CartItem(product: product1, quantity: 1),
+    CartItem(product: product2, quantity: 3),
+  ];
 
-    // Verificamos que los campos del objeto Order coincidan con el JSON
-    expect(order.id, '1');
-    expect(order.customerId, '123');
-    expect(order.sellerId, '456');
-    expect(order.dateOrder, DateTime(2025, 4, 27, 10, 30));
-    expect(order.dateDelivery, DateTime(2025, 4, 28, 10, 30));
-    expect(order.status, 'reserved');
-  });
+  group('Order', () {
+    test('Constructor funciona correctamente', () {
+      final order = Order(
+        id: 'O1',
+        customerId: 'C1',
+        sellerId: 'S1',
+        dateOrder: dateOrder,
+        dateDelivery: dateDelivery,
+        status: 'pending',
+        products: cartItems,
+      );
 
-  // Test 3: Verificar que toJson convierte correctamente el objeto Order en un mapa
-  test('Order.toJson converts Order object to map', () {
-    final order = Order(
-      id: '1',
-      customerId: '123',
-      sellerId: '456',
-      dateOrder: DateTime(2025, 4, 27, 10, 30),
-      dateDelivery: DateTime(2025, 4, 28, 10, 30),
-      status: 'reserved',
-    );
+      expect(order.id, 'O1');
+      expect(order.customerId, 'C1');
+      expect(order.sellerId, 'S1');
+      expect(order.dateOrder, dateOrder);
+      expect(order.dateDelivery, dateDelivery);
+      expect(order.status, 'pending');
+      expect(order.products.length, 2);
+      expect(order.products.first.product.sku, 'LP123');
+    });
 
-    final json = order.toJson();
+    test('toJson retorna el mapa esperado', () {
+      final order = Order(
+        id: 'O1',
+        customerId: 'C1',
+        sellerId: 'S1',
+        dateOrder: dateOrder,
+        dateDelivery: dateDelivery,
+        status: 'pending',
+        products: cartItems,
+      );
 
-    // Verificamos que el mapa generado por toJson coincida con lo esperado
-    expect(json['id'], '1');
-    expect(json['customer_id'], '123');
-    expect(json['seller_id'], '456');
-    expect(json['date_order'], '2025-04-27T10:30:00.000');
-    expect(json['date_delivery'], '2025-04-28T10:30:00.000');
-    expect(json['status'], 'reserved');
+      final json = order.toJson();
+
+      expect(json['id'], 'O1');
+      expect(json['customer_id'], 'C1');
+      expect(json['seller_id'], 'S1');
+      expect(json['date_order'], dateOrder.toIso8601String());
+      expect(json['date_delivery'], dateDelivery.toIso8601String());
+      expect(json['status'], 'pending');
+      expect(json['products'], isA<List>());
+      expect(json['products'][0]['product']['sku'], 'LP123');
+      expect(json['products'][1]['quantity'], 3);
+    });
+
+    test('fromJson crea una instancia válida', () {
+      final json = {
+        'id': 'O1',
+        'customer_id': 'C1',
+        'seller_id': 'S1',
+        'date_order': '2025-05-10T09:00:00.000Z',
+        'date_delivery': '2025-05-12T15:00:00.000Z',
+        'status': 'pending',
+        'products': [
+          {
+            'product': {
+              'id': 'P1',
+              'product': 'Laptop',
+              'sku': 'LP123',
+              'unit_value': 1200.50,
+              'photo': 'photo_url',
+              'category': 'Electronics',
+              'quantity': 10,
+              'estimated_delivery_time': '2025-05-11T00:00:00.000Z',
+              'date_update': '2025-05-09T12:00:00.000Z',
+            },
+            'quantity': 1,
+          },
+          {
+            'product': {
+              'id': 'P2',
+              'product': 'Mouse',
+              'sku': 'MS456',
+              'unit_value': 25.75,
+              'photo': 'photo_url_2',
+              'category': 'Accessories',
+              'quantity': 30,
+              'estimated_delivery_time': '2025-05-11T00:00:00.000Z',
+              'date_update': '2025-05-09T12:00:00.000Z',
+            },
+            'quantity': 3,
+          }
+        ],
+      };
+
+      final order = Order.fromJson(json);
+
+      expect(order.id, 'O1');
+      expect(order.customerId, 'C1');
+      expect(order.products.length, 2);
+      expect(order.products[0].product.unitValue, 1200.50);
+      expect(order.products[1].product.category, 'Accessories');
+    });
+
+    test('fromJson maneja campos opcionales y lista vacía', () {
+      final json = {
+        'id': 'O2',
+        'customer_id': 'C2',
+        'seller_id': null,
+        'date_order': '2025-05-01T10:00:00.000Z',
+        'date_delivery': '2025-05-05T10:00:00.000Z',
+        'status': 'completed',
+        'products': [],
+      };
+
+      final order = Order.fromJson(json);
+
+      expect(order.sellerId, isNull);
+      expect(order.products, isEmpty);
+    });
   });
 }

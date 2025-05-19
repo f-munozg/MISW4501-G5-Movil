@@ -56,9 +56,8 @@ class ShoppingCartView extends StatelessWidget {
 
       return success;
     } else {
-      print("Usuario es vendedor: $userRole");
       final userId = cartProvider.selectedClient;
-      print("Usuario es vendedor: $userId");
+
       final sellerId = await _getUserId();
       if (userId == null) {
         ScaffoldMessenger.of(context).showSnackBar(
